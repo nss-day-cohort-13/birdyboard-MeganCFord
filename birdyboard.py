@@ -15,7 +15,7 @@ class Birdyboard:
         prints the choices for an unlogged-in user, at start of app. calls the unlogged_in_menu_next_step method to determine where to go next.
         Arguments: none
         """
-        print("welcome.\n1. view chirps\n2. new chirp (public)")
+        print("1. view chirps\n2. new chirp (public)")
         #  I've separated out the input so I can re-run it alone for easier error handling.
         self.unlogged_in_menu_next_step()
 
@@ -38,15 +38,43 @@ class Birdyboard:
             self.unlogged_in_new_chirp()
 
     def unlogged_in_view_chirps(self):
-        # load the 'chirps' .txt file. Do I want to run this in an init?
+        # load the 'chirps' .txt file.
         self.all_chirps = self.deserialize_chirps_library()
         # assign the public part of the .txt file to an object.
         self.public_chirps = self.all_chirps["public"]
         # print the first chirp in the public list for each public thread.
-        [print(chirp[0]) for chirp in self.public_chirps]
-        # uh, I need to format this.
+        # formatted.
+        [print(str(self.public_chirps.index(chirp) + 1) + ". " + chirp[0][0] + ": " + chirp[0][1]) for chirp in self.public_chirps]
+        self.view_chirps_next_step()
         # assign some kind of value to them, so that the user can access the full list.
         # go back option sends back to unlogged in menu print.
+
+    def view_chirps_next_step(self):
+        next_step = input("enter the number of the chirp you'd like to view the full thread for.\n'x' to go back.\n>> ")
+
+        if next_step == "x":
+            print("going back.")
+            self.unlogged_in_menu_print()
+        else:
+            try:
+                next_step == int(next_step)
+                try:
+                    chirp_to_show = self.public_chirps[int(next_step)-1]
+                    print(chirp_to_show)
+                    self.view_full_chirp(chirp_to_show)
+                except IndexError:
+                    print("your number is not in the list of chirps.")
+                    self.view_chirps_next_step()
+                finally:
+                    pass
+            except TypeError:
+                print("you didn't enter a number.")
+                self.view_chirps_next_step()
+            finally:
+                pass
+
+    def view_full_chirp(self, chirp_to_show):
+        print(chirp_to_show)
 
     def deserialize_chirps_library(self):
         # TODO: change default library to reflect the lack of messages in a more meaningful way. these are just test messages.
