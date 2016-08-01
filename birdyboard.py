@@ -2,14 +2,12 @@
 
 # I'm going to start with everyone sharing one user, and have all tweets be public.
 
-# so the menu will be:
-# View Chirps
-# new chirp (public)
 
 class Birdyboard:
 
     def __init__(self):
         self.user_name = "Megan"  # later I will set this to None and have the login menu reassign it.
+        self.public_chirps = []
 
     # TODO: add a decorator here that will print a title heading so I can use it for both the logged in menu and the unlogged in menu?
     def unlogged_in_menu_print(self):
@@ -40,6 +38,7 @@ class Birdyboard:
             self.unlogged_in_new_chirp()
 
     def unlogged_in_view_chirps(self):
+        pass
         # load the 'chirps' .txt file
         # assign the public part of the .txt file to an object.
         # print the first chirp in the public list for each public thread, formatted.
@@ -47,6 +46,7 @@ class Birdyboard:
         # go back option sends back to unlogged in menu print.
 
     def unlogged_in_view_full_tweet(self):
+        pass
         # grab the value of the thread that the user chose. Do I want to assign it a value in the .txt, like as a dictionary?
         # print all the messages in the thread.
         # do not allow for new tweets- simply a go back option which sends back to view chirps.
