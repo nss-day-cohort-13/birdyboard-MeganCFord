@@ -1,0 +1,17 @@
+ chirps: {
+    "public":[
+      [("uname", "text"), ("uname", "text"), ("uname", "text")], 
+      [("uname", "text"), ("uname", "text"), ("uname", "text")]
+    ], 
+    "private": [
+      {"users": 
+        ("u_one", "u_two"), 
+      "tweets": 
+        [("uname", "text"), ("uname", "text")]
+      }, 
+      {"users": (
+        "u_one", "u_two"), 
+        "tweets": 
+          [("uname", "text"), ("uname", "text")]
+      }
+    ]
