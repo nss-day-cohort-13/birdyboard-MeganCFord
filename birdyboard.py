@@ -1,4 +1,4 @@
-
+import pickle
 
 # I'm going to start with everyone sharing one user, and have all tweets be public.
 
@@ -7,7 +7,7 @@ class Birdyboard:
 
     def __init__(self):
         self.user_name = "Megan"  # later I will set this to None and have the login menu reassign it.
-        self.public_chirps = []
+        self.public_chirps = list
 
     # TODO: add a decorator here that will print a title heading so I can use it for both the logged in menu and the unlogged in menu?
     def unlogged_in_menu_print(self):
@@ -38,12 +38,28 @@ class Birdyboard:
             self.unlogged_in_new_chirp()
 
     def unlogged_in_view_chirps(self):
-        pass
-        # load the 'chirps' .txt file
+        # load the 'chirps' .txt file. Do I want to run this in an init?
+        self.all_chirps = self.deserialize_chirps_library()
         # assign the public part of the .txt file to an object.
-        # print the first chirp in the public list for each public thread, formatted.
+        self.public_chirps = self.all_chirps["public"]
+        # print the first chirp in the public list for each public thread.
+        [print(chirp[0]) for chirp in self.public_chirps]
+        # uh, I need to format this.
         # assign some kind of value to them, so that the user can access the full list.
         # go back option sends back to unlogged in menu print.
+
+    def deserialize_chirps_library(self):
+        # TODO: change default library to reflect the lack of messages in a more meaningful way. these are just test messages.
+        # TODO: add a 'delete thread' option so I can get rid of these default messages?
+        try:
+            with open('chirps.txt', 'rb') as chirps:
+                chirp_library = pickle.load(chirps)
+
+        except FileNotFoundError:
+                chirp_library = {"public": [[("username", "sample_text")]]}
+        except EOFError:
+                chirp_library = {"public": [[("username", "sample text"), ("another_username", "more sample text.")], [("username", "second thread"), ("username", "second thread second message.")]]}
+        return chirp_library
 
     def unlogged_in_view_full_tweet(self):
         pass
