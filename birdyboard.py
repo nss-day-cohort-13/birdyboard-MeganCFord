@@ -55,10 +55,12 @@ class Birdyboard:
 
     def view_chirps(self):
         print("******ALL CHIRPS******")
-        if len(self.chirps_library["public"]) >0:
+        if len(self.chirps_library["public"]) > 0:
+            print("PUBLIC:")
             [print(str(self.chirps_library["public"].index(chirp) + 1) + ". " + chirp[0][0] + ": " + chirp[0][1]) for chirp in self.chirps_library["public"]]
         else:
-            print("no chirps yet!")
+            print("no public chirps yet!")
+        # TODO: print the private chirps.
 
     def view_chirps_next_step(self):
         next_step = input("enter the number of the chirp you'd like to view the full thread for.\n'x' to go back.\n>> ")
@@ -92,6 +94,7 @@ class Birdyboard:
     def view_full_chirp(self, public_or_private, chirp_index):
         self.chirp_to_display = {"location": public_or_private, "index": chirp_index, "chirp list": self.chirps_library[public_or_private][chirp_index]}
         [print(chirp[0] + ": " + chirp[1]) for chirp in self.chirp_to_display["chirp list"]]
+        self.new_chirp_menu()
 
     def chirp_thread_menu(self):
         # TODO: add an 'add comment' option here.
@@ -110,7 +113,19 @@ class Birdyboard:
     def new_chirp_menu(self):
         # TODO: handle private chirps.
         if self.chirp_to_display is not None:
-            print("Add Chirp to thread:" + self.user_name)
+
+            if self.chirp_to_display["location"] == "public":
+                # TODO: nest the adding chirp into a further menu so you can view a thread without having to add to it.
+                print("Add Chirp to public thread:" + self.user_name)
+                chirp_to_add = input("chirp text: >> ")
+                self.chirps_library["public"][self.chirp_to_display["index"]].append((self.user_name, chirp_to_add))
+                self.serialize_chirps_library()
+                self.chirp_to_display = None
+                self.view_chirps()
+                self.view_chirps_next_step()
+            elif self.chirp_to_display["location"] == "private":
+                print("private chirps will go here.")
+                self.chirp_thread_menu()
         else:
             print("New Chirp Thread: " + self.user_name)
         chirp_to_add = input("chirp text: >> ")
