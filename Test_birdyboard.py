@@ -26,10 +26,18 @@ class Test_Birdyboard(unittest.TestCase):
         self.assertEqual(self.public_tweet_test.current_chirp, {"location": "public", "index": 0, "chirps": [("hey", "what"), ("no", "thank you")]})
 
     def test_that_public_tweet_adds(self):
-        pass
+        self.public_adding_tweet = Birdyboard()
+        self.public_adding_tweet.chirps_library = {"public": [[("hey", "what"), ("no", "thank you")], [("second", "text"), ("not", "sure how this will work.")]], "private": []}
+        self.public_adding_tweet.add_new_chirp_thread("oh no.")
+        self.assertIn([("Megan", "oh no.")], self.public_adding_tweet.chirps_library["public"], )
 
     def test_that_you_can_add_to_a_public_tweet(self):
-        pass
+        self.public_adding_tweet = Birdyboard()
+        self.public_adding_tweet.chirps_library = {"public": [[("hey", "what"), ("no", "thank you")], [("second", "text"), ("not", "sure how this will work.")]], "private": []}
+        self.public_adding_tweet.view_full_chirp("public", 0)
+        self.public_adding_tweet.add_to_existing_chirp_thread("oh no!")
+        self.assertIn(("Megan", "oh no!"), self.public_adding_tweet.current_chirp["chirps"])
+        self.assertIn(("Megan", "oh no!"), self.public_adding_tweet.chirps_library["public"][0])
 
 
 if __name__ == '__main__':
