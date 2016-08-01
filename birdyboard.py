@@ -160,8 +160,6 @@ class Birdyboard:
                     exit()
                 else:
                     self.add_to_existing_chirp_thread(chirp_to_add)
-                    self.serialize_chirps_library()
-                    self.chirp_to_display = None
                 self.view_full_chirp(self.current_chirp["location"], self.current_chirp["index"])
                 self.chirp_thread_menu()
                 # TODO: handle private tweeting.
@@ -177,25 +175,26 @@ class Birdyboard:
                 print("goodbye.")
                 exit()
             else:
-                self.deserialize_chirps_library()
                 self.add_new_chirp_thread(chirp_to_add)
-                self.serialize_chirps_library()
         self.view_chirps()
         self.view_chirps_next_step()
 
     def add_new_chirp_thread(self, text):
         """
-        runs inside 'new chirp menu'. adds a new top level chirp thread to the public chirp thread list, using current user name and text passed in from menu.
+        runs inside 'new chirp menu'. adds a new top level chirp thread to the public chirp thread list, using current user name and text passed in from menu. also makes sure the .txt file is as up to date as possible.
         Arguments: string of text. ex: "this is a chirp."
         """
+        self.deserialize_chirps_library()  # this is in case the library has not been opened yet!
         self.chirps_library["public"].append([(self.user_name, text)])
+        self.serialize_chirps_library()
 
     def add_to_existing_chirp_thread(self, text):
         """
-        runs inside 'new chirp menu'. adds a new chirp to a selected public chirp thread list, using current user name and text passed in from menu.
+        runs inside 'new chirp menu'. adds a new chirp to a selected public chirp thread list, using current user name and text passed in from menu. also makes sure the .txt file is as up to date as possible.
         Arguments: string of text. ex: "this is a chirp."
         """
         self.chirps_library["public"][self.current_chirp["index"]].append((self.user_name, text))
+        self.serialize_chirps_library()
 
 
     def serialize_chirps_library(self):
