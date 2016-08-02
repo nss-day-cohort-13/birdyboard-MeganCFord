@@ -1,26 +1,15 @@
-
-
-# I'm going to start with everyone sharing one user, and have all tweets be public.
-
-# so the menu will be:
-# View Chirps
-# new chirp (public)
-
-# structure of the chirps is going to be:
-#
 import pickle
-
-# I'm going to start with everyone sharing one user, and have all tweets be public.
 
 
 class Birdyboard:
 
     def __init__(self):
-        self.user_name = None
-        self.chirps_library = {"public": [], "private": []}
-        self.current_chirp = None
-        self.public_or_private = ""
         self.users = []
+        self.user_name = None
+
+        self.chirps_library = {"public": [], "private": []}
+        self.public_or_private = ""
+        self.current_chirp = None
 
 # ############################################
 # ######## UNLOGGED IN TOP LEVEL MENU ########
@@ -40,19 +29,12 @@ class Birdyboard:
         Arguments: none
         """
         next_step = input(">> ")
-        # error handling.
-        if len(next_step) > 1:
-            print("you only need to type one character!")
-            self.unlogged_in_menu_next_step()
-        elif next_step not in ["1", "2", "3", "x"]:
-            print("please choose one of the options shown above.")
-            self.unlogged_in_menu_next_step()
-        # allowed options.
-        elif next_step == "1":  # create a user.
+        if next_step == "1":  # create a user.
             print("creating a new user.")
             self.create_a_user_menu()
         elif next_step == "2":  # log in to a current user.
-            print('log in to a current user will show up here.')
+            self.view_users_menu()
+            self.users_menu_next_step()
         elif next_step == "3":  # view public chirps. does not have the option of commenting.
             self.deserialize_chirps_library()
             self.view_public_chirps()
@@ -60,6 +42,9 @@ class Birdyboard:
         elif next_step == "x":  # exit.
             print("goodbye.")
             exit()
+        else:
+            print("command not found.")
+            self.unlogged_in_menu_next_step()
 
 # ##########################################
 # ######## LOGGED IN TOP LEVEL MENU ########
@@ -71,15 +56,7 @@ class Birdyboard:
 
     def logged_in_menu_next_step(self):
         next_step = input(">> ")
-        # error handling.
-        if len(next_step) > 1:
-            print("you only need to type one character!")
-            self.logged_in_menu_next_step()
-        elif next_step not in ["1", "2", "3", "4", "5", "x"]:
-            print("please choose one of the options shown above.")
-            self.logged_in_menu_next_step()
-        # allowed options.
-        elif next_step == "1":  # log out
+        if next_step == "1":  # log out
             print('logging out.')
             self.user_name = None
             self.unlogged_in_menu_print()
@@ -97,6 +74,9 @@ class Birdyboard:
         elif next_step == "x":  # exit.
             print("goodbye.")
             exit()
+        else:
+            print("command not found.")
+            self.logged_in_menu_next_step()
 
 # ###############################
 # ######## CREATE A USER ########
@@ -104,26 +84,40 @@ class Birdyboard:
 
     def create_a_user_menu(self):
         self.deserialize_users()
-        print(type(self.users))
         user_name = input("user name: ")
-        for user in self.users:
-            if user_name == user["user_name"]:
-                print("User name already taken!")
-                self.what_if_user_name_is_taken()
-        password = input("password: ")
-        self.add_new_user(user_name, password)
-        print("logging in " + user_name + ".")
-        self.logged_in_menu_print()
-        self.logged_in_menu_next_step()
+        if user_name == "b":
+            print("going back")
+            self.unlogged_in_menu_print()
+            self.unlogged_in_menu_next_step()
+        elif user_name == "x":
+            print("goodbye.")
+            exit()
+        else:
+            for user in self.users:
+                if user_name == user["user_name"]:
+                    print("User name already taken!")
+                    self.what_if_user_name_is_taken()
+            password = input("password: ")
+            self.add_new_user(user_name, password)
+            print("logging in " + user_name + ".")
+            self.logged_in_menu_print()
+            self.logged_in_menu_next_step()
 
     def what_if_user_name_is_taken(self):
-        print("1. Choose from a list of created users.\n2. Try creating a user with a different name.")
+        print("'b' to go back.\n'x' to exit.\n1. Choose from a list of created users.\n2. Try creating a user with a different name.")
         next_step = input(">> ")
         if next_step == "1":
             self.view_users_menu()
             self.users_menu_next_step()
         elif next_step == "2":
             self.create_a_user_menu()
+        elif next_step == "b":
+            print("going back.")
+            self.unlogged_in_menu_print()
+            self.unlogged_in_menu_next_step()
+        elif next_step == "x":
+            print("goodbye.")
+            exit()
         else:
             print("command not found.")
             self.what_if_user_name_is_taken()
@@ -141,11 +135,42 @@ class Birdyboard:
 
     def view_users_menu(self):
         self.deserialize_users()
-        [print(str(self.users.index(user) + 1) + ". " + user["username"]) for user in self.users]
+        [print(str(self.users.index(user) + 1) + ". " + user["user_name"]) for user in self.users]
         self.users_menu_next_step()
 
     def users_menu_next_step(self):
-        pass
+        next_step = input("'b' to go back.\n'x' to exit.\nChoose a user to log into.\n>> ")
+        if next_step == "b":
+            self.unlogged_in_menu_print()
+            self.unlogged_in_menu_next_step()
+        elif next_step == "x":
+            print("goodbye.")
+            exit()
+        else:
+            try:
+                next_step = int(next_step)
+            except ValueError:
+                print("you didn't enter a number.")
+                self.users_menu_next_step()
+            finally:
+                try:
+                    if int(next_step)-1 >= 0:
+                        user_index = int(next_step)-1
+                        current_user = self.users[user_index]
+                    else:
+                        print("your number is not in the list of users.")
+                        self.users_menu_next_step()
+                except IndexError:
+                    print("your number is not in the list of users.")
+                    self.users_menu_next_step()
+                finally:
+                    password_try = input("password: ")
+                    if password_try == current_user["password"]:
+                        self.current_user = current_user["user_name"]
+                        print("logging in")
+                        self.logged_in_menu_print()
+                        self.logged_in_menu_next_step()
+
 
 # ####################################
 # ######## VIEW PUBLIC CHIRPS ########
@@ -352,12 +377,9 @@ class Birdyboard:
         try:
             with open("users.txt", "rb") as users:
                 self.users = pickle.load(users)
-                print(self.users)
         except FileNotFoundError:
-                print("file not found error.")
                 self.users = [{"user_name": "megan", "password": "1234"}]
         except EOFError:
-                print("end of file error.")
                 self.users = [{"user_name": "megan", "password": "1234"}]
 
     def serialize_users(self):
