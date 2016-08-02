@@ -330,7 +330,8 @@ class Birdyboard:
 
     def add_to_chirp_menu(self):
         """
-
+        requests input from the user for a new chirp to add to the curreng thread. error handles. Runs as part of full_chirp_menu.
+        Arguments: none
         """
         chirp_to_add = input("'b' to go back.\n'x' to exit.\nchirp text: >> ")
         if chirp_to_add == "b":
@@ -345,12 +346,16 @@ class Birdyboard:
         self.full_chirp_menu()
 
     def add_to_chirp(self, text):
+        """
+        runs as part of add_to_chirp_menu. adds a chirp to the current thread (top level variable public_or_private and current_index).
+
+        Arguments: string text. ex: "this is a chirp."
+        """
         self.deserialize_chirps_library()
         if self.public_or_private == "public":
-            self.chirps_library[self.public_or_private][self.current_chirp["index"]].append(self.user_name, text)
+            self.chirps_library[self.public_or_private][self.current_index].append(self.user_name, text)
         elif self.public_or_private == "private":
-            # 
-            self.chirps_library[self.public_or_private][self.current_chirp["index"]]["chirps"].append(self.user_name, text)
+            self.chirps_library[self.public_or_private][self.current_index]["chirps"].append(self.user_name, text)
         self.serialize_chirps_library()
 
 
@@ -370,9 +375,9 @@ class Birdyboard:
             if self.public_or_private == "private":
                 self.private_chirp_thread_menu()
             else:
-            self.add_new_chirp_thread(chirp_to_add)
-            self.view_chirps()
-            self.view_chirps_next_step()
+                self.add_new_chirp_thread(chirp_to_add)
+                self.view_chirps()
+                self.view_chirps_next_step()
 
     def private_chirp_thread_menu(self):
         pass
