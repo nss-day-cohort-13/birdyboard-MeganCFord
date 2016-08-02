@@ -112,7 +112,7 @@ class Birdyboard:
                 self.what_if_user_name_is_taken()
         password = input("password: ")
         self.add_new_user(user_name, password)
-        self.user_name = user_name
+        print("logging in " + user_name + ".")
         self.logged_in_menu_print()
         self.logged_in_menu_next_step()
 
@@ -132,10 +132,8 @@ class Birdyboard:
         self.deserialize_users()
         self.users.append({"user_name": user_name, "password": password})
         self.serialize_users()
-        print("logging in " + user_name + ".")
         self.user_name = user_name
-        self.logged_in_menu_print()
-        self.logged_in_menu_next_step()
+
 
 # ############################
 # ######## VIEW USERS ########
