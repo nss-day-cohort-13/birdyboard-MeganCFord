@@ -250,7 +250,10 @@ class Birdyboard:
         menu that appears after all chirps are printed (view_chirps). Allows the user to view a full chirp thread based on the index, or to go back or exit.
         arguments: none
         """
-        next_step = input("enter the number of the chirp you'd like to view the full thread for.\n'n' for new chirp thread.\n'b' to go back.\n'x' to exit.>> ")
+        if user_name is not None:
+            next_step = input("enter the number of the chirp you'd like to view the full thread for.\n'n' for new chirp thread.\n'b' to go back.\n'x' to exit.\n>> ")
+        else: 
+            next_step = input("enter the number of the chirp you'd like to view the full thread for.\n'b to go back.\n'x' to exit.\n>> ")
 
         if next_step == "b":
             print("going back.")
@@ -264,7 +267,10 @@ class Birdyboard:
             print("goodbye.")
             exit()
         elif next_step == "n":
-            self.new_chirp_thread_menu()
+            if self.user_name is not None:
+                self.new_chirp_thread_menu()
+            else:
+                pass
         else:  # select the number of the printed tweet.
             try:
                 next_step == int(next_step)
@@ -395,6 +401,14 @@ class Birdyboard:
                 self.view_chirps_next_step()
 
     def private_chirp_thread_menu(self):
+        """
+        menu that prints when you're creating a new private chirp.
+        requests input for the name of the second user you'd like to chirp to- keeping in mind that you can only chirp to people who already exist-
+        the text that you'd like to send to them, formats the whole thing,
+        and adds that to the add_new_thread function.
+
+        Arguments: none
+        """
         next_step = input("'b' to go back.\n'x' to exit.\nTo which user would you like to send your chirp?\n>> ")
         if next_step == "b":
             print("going back.")
