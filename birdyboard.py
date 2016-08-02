@@ -12,17 +12,16 @@ class Birdyboard:
         self.public_or_private = ""
         self.chirp_index = None
 
+# ###############################
+# ######## MENU PRINTERS ########
+# ###############################
+
+        self.unlogged_in_menu = "Welcome. You are not logged in.\n1. new user\n2. log in\n3. view public chirps\n'x' to exit.\n"
+        self.logged_in_menu = "Welcome " + self.user_name + "!\n1. log out\n2. view public chirps\n3. view private chirps\n4. New public chirp thread\n5. new private chirp thread\n'x' to exit.\n"
+
 # ############################################
 # ######## UNLOGGED IN TOP LEVEL MENU ########
 # ############################################
-
-    def unlogged_in_menu_print(self):
-        """
-        prints the choices for an unlogged-in user, at start of app.
-        Arguments: none
-        """
-        print("Welcome. You are not logged in.\n")
-        print("1. new user\n2. log in\n3. view public chirps\n'x' to exit.\n")
 
     def unlogged_in_menu_next_step(self):
         """
@@ -52,16 +51,12 @@ class Birdyboard:
 # ######## LOGGED IN TOP LEVEL MENU ########
 # ##########################################
 
-    def logged_in_menu_print(self):
-        print("welcome " + self.user_name + "!")
-        print("1. log out\n2. view public chirps\n3. view private chirps\n4. New public chirp thread\n5. new private chirp thread\n'x' to exit.\n")
-
     def logged_in_menu_next_step(self):
         next_step = input(">> ")
         if next_step == "1":  # log out
             print('logging out.')
             self.user_name = None
-            self.unlogged_in_menu_print()
+            print(self.unlogged_in_menu)
             self.unlogged_in_menu_next_step()
         elif next_step == "2":  # view public threads.
             self.deserialize_chirps_library()
@@ -93,7 +88,7 @@ class Birdyboard:
         user_name = input("user name: ")
         if user_name == "b":
             print("going back")
-            self.unlogged_in_menu_print()
+            print(self.unlogged_in_menu)
             self.unlogged_in_menu_next_step()
         elif user_name == "x":
             print("goodbye.")
@@ -106,7 +101,7 @@ class Birdyboard:
             password = input("password: ")
             self.add_new_user(user_name, password)
             print("logging in " + user_name + ".")
-            self.logged_in_menu_print()
+            print(self.logged_in_menu)
             self.logged_in_menu_next_step()
 
     def what_if_user_name_is_taken(self):
@@ -120,7 +115,7 @@ class Birdyboard:
             self.create_a_user_menu()
         elif next_step == "b":
             print("going back.")
-            self.unlogged_in_menu_print()
+            print(self.unlogged_in_menu)
             self.unlogged_in_menu_next_step()
         elif next_step == "x":
             print("goodbye.")
@@ -156,7 +151,7 @@ class Birdyboard:
         next_step = input("'b' to go back.\n'x' to exit.\nChoose a user to log into.\n>> ")
         if next_step == "b":
             print("going back.")
-            self.unlogged_in_menu_print()
+            print(self.unlogged_in_menu)
             self.unlogged_in_menu_next_step()
         elif next_step == "x":
             print("goodbye.")
@@ -204,7 +199,7 @@ class Birdyboard:
         else:
             verify = self.check_password(user_index, password_try)
             if verify is True:
-                self.logged_in_menu_print()
+                print(self.logged_in_menu)
                 self.logged_in_menu_next_step()
             else:
                 print("incorrect Password.")
@@ -258,10 +253,10 @@ class Birdyboard:
         if next_step == "b":
             print("going back.")
             if self.user_name is not None:
-                self.logged_in_menu_print()
+                print(self.logged_in_menu)
                 self.logged_in_menu_next_step()
             else:
-                self.unlogged_in_menu_print()
+                print(self.unlogged_in_menu)
                 self.unlogged_in_menu_next_step()
         elif next_step == "x":
             print("goodbye.")
@@ -385,7 +380,7 @@ class Birdyboard:
         next_step = input("title text: >>")
         if next_step == "b":
             print("going back.")
-            self.logged_in_menu_print()
+            print(self.logged_in_menu)
             self.logged_in_menu_next_step()
         elif next_step == "x":
             print("goodbye.")
@@ -435,7 +430,7 @@ class Birdyboard:
                     text = input("what would you like to say? \n>> ")
                     if next_step == "b":
                         print("going back.")
-                        self.logged_in_menu_print()
+                        print(self.logged_in_menu)
                         self.logged_in_menu_next_step()
                     elif next_step == "x":
                         print("goodbye.")
@@ -506,5 +501,5 @@ class Birdyboard:
 
 if __name__ == '__main__':
     app = Birdyboard()
-    app.unlogged_in_menu_print()
+    print(app.unlogged_in_menu)
     app.unlogged_in_menu_next_step()
