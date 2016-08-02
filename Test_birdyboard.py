@@ -28,7 +28,7 @@ class Test_Birdyboard(unittest.TestCase):
         self.public_adding_tweet = Birdyboard()
         self.public_adding_tweet.chirps_library = {"public": [[("hey", "what"), ("no", "thank you")], [("second", "text"), ("not", "sure how this will work.")]], "private": []}
         self.public_adding_tweet.add_new_public_chirp_thread("oh no.")
-        self.assertIn([(None, "oh no.")], self.public_adding_tweet.chirps_library["public"], )
+        self.assertIn([(None, "oh no.")], self.public_adding_tweet.chirps_library["public"])
 
     def test_that_you_can_add_to_a_public_tweet(self):
         self.public_adding_tweet = Birdyboard()

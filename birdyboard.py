@@ -139,7 +139,7 @@ class Birdyboard:
 # ############################
 # ######## VIEW USERS ########
 # ############################
-# NOTE: I am fully aware that this is a completely insecure way to handle a password system.
+# I am fully aware that this is a completely insecure way to handle a password system.
 
     def view_users_menu(self):
         """
@@ -168,6 +168,7 @@ class Birdyboard:
                 print("you didn't enter a number.")
                 self.users_menu_next_step()
             finally:
+                # TODO: fix this. it doesn't work.
                 try:
                     if int(next_step)-1 >= 0:
                         user_index = int(next_step)-1
@@ -234,7 +235,7 @@ class Birdyboard:
 
         Arguments: none.
         """
-        print("******" + self.public_or_private + " CHIRPS******")
+        print("******" + self.public_or_private.upper() + " CHIRPS******")
         if len(self.chirps_library[self.public_or_private]) > 0:
             if self.public_or_private == "public":
                 [print(str(self.chirps_library[self.public_or_private].index(chirp) + 1) + ". " + chirp[0][0] + ": " + chirp[0][1]) for chirp in self.chirps_library[self.public_or_private]]
@@ -271,6 +272,7 @@ class Birdyboard:
                 print("you didn't enter a number.")
                 self.view_chirps_next_step()
             finally:
+                # TODO: mess with this until it works.
                 if int(next_step)-1 >= 0:
                     try:
                         self.chirp_index = int(next_step)-1
@@ -286,9 +288,9 @@ class Birdyboard:
                     print("your number is not in the list of chirps.")
                     self.view_chirps_next_step()
 
-# #############################################
-# ######## VIEW FULL CHIRP/ADD COMMENT ########
-# #############################################
+# ########################################
+# ######## VIEW FULL CHIRP THREAD ########
+# ########################################
 
     def view_full_chirp(self):
         """
@@ -328,6 +330,10 @@ class Birdyboard:
             print("command not recognized.")
             self.chirp_thread_menu()
 
+# #############################
+# ######## ADD COMMENT ########
+# #############################
+
     def add_to_chirp_menu(self):
         """
         requests input from the user for a new chirp to add to the curreng thread. error handles. Runs as part of full_chirp_menu.
@@ -364,31 +370,78 @@ class Birdyboard:
 # ##################################
 
     def new_chirp_thread_menu(self):
+        """
+        prints when 'new chirp' is chosen from top level menu. Requests input text and handles, based on whether the thread will be public or private, whether to send the chirp directly to serialization or to request a user to send a private chirp to.
+        Arguments: none
+        """
 
         print("'b' to go back.\n'x' to exit.\n******NEW " + self.public_or_private + " CHIRP THREAD:******")
-        if chirp_to_add == "b":
+        next_step = input("title text: >>")
+        if next_step == "b":
             print("going back.")
-        elif chirp_to_add == "x":
+            self.logged_in_menu_print()
+            self.logged_in_menu_next_step()
+        elif next_step == "x":
             print("goodbye.")
             exit()
         else:
             if self.public_or_private == "private":
+                self.view_users_menu()
                 self.private_chirp_thread_menu()
             else:
-                self.add_new_chirp_thread(chirp_to_add)
+                formatted_chirp = [(self.user_name, next_step)]
+                self.add_new_thread(formatted_chirp)
                 self.view_chirps()
                 self.view_chirps_next_step()
 
     def private_chirp_thread_menu(self):
-        pass
+        next_step = input("'b' to go back.\n'x' to exit.\nTo which user would you like to send your chirp?\n>> ")
+        if next_step == "b":
+            print("going back.")
+        elif next_step == "x":
+            print("goodbye.")
+            exit()
+        else:
+            try:
+                int_next_step = int(next_step)-1
+            except ValueError:
+                print("you didn't enter a number.")
+                self.private_chirp_thread_menu()
+            finally:
+                try:
+                    if int_next_step < 0:
+                        print("your number is not in the list of users.")
+                        self.private_chirp_thread_menu()
+                    else:
+                        user_two = self.users[next_step]
+                except IndexError:
+                    print("your number is not in the list of users.")
+                    self.private_chirp_thread_menu
+                finally:
+                    text = input("what would you like to say? \n>> ")
+                    if next_step == "b":
+                        print("going back.")
+                        self.logged_in_menu_print()
+                        self.logged_in_menu_next_step()
+                    elif next_step == "x":
+                        print("goodbye.")
+                        exit()
+                    else:
+                        formatted_chirp = {"users": (self.user_name, user_two["user_name"]), "chirps": [(self.user_name, text)]}
+                        self.add_new_thread(formatted_chirp)
+                        self.view_chirps()
+                        self.view_chirps_next_step()
 
     def add_new_thread(self, formatted_chirp):
         """
         runs inside 'new chirp menu's, both public and private. adds a new chirp to a selected public chirp thread list, using current user name and text passed in from menu. also makes sure the .txt file is as up to date as possible.
-        Arguments: a formatted chirp. for a public chirp, it's simply a 2-item tuple (user_name, text). for a private chirp, it's a dictionary: {users:(user1, user2), "chirps": (user1, text)}
+
+        Arguments: formatted new-thread object from either new_chirp_thread_menu or private_chirp_thread_menu.
+
+        FORMAT: for a public chirp, it's simply a 2-item tuple in a list [(user_name, text)]. for a private chirp, it's a dictionary: {users:(user1, user2), "chirps": (user1, text)}
         """
         self.deserialize_chirps_library()
-        self.chirps_library[self.public_or_private][self.current_chirp["index"]].append(formatted_chirp)
+        self.chirps_library[self.public_or_private].append(formatted_chirp)
         self.serialize_chirps_library()
 
 # ###############################
