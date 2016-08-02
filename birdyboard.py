@@ -37,7 +37,8 @@ class Birdyboard:
             self.users_menu_next_step()
         elif next_step == "3":  # view public chirps. does not have the option of commenting.
             self.deserialize_chirps_library()
-            self.view_public_chirps()
+            self.public_or_private = "public"
+            self.view_chirps()
             self.view_chirps_next_step()
         elif next_step == "x":  # exit.
             print("goodbye.")
@@ -63,13 +64,17 @@ class Birdyboard:
             self.unlogged_in_menu_next_step()
         elif next_step == "2":  # view public chirps.
             self.deserialize_chirps_library()
-            self.view_public_chirps()
+            self.public_or_private = "public"
+            self.view_chirps()
             self.view_chirps_next_step()
         elif next_step == "3":  # view private chirps.
-            print("view private chirps will show up here.")
+            self.public_or_private = "private"
+            self.view_chirps_next_step()
         elif next_step == "4":  # new public chirp.
+            self.public_or_private = "public"
             self.new_chirp_menu()
         elif next_step == "5":  # new private chirp.
+            self.public_or_private = "private"
             self.new_chirp_menu()
         elif next_step == "x":  # exit.
             print("goodbye.")
@@ -107,6 +112,7 @@ class Birdyboard:
         print("'b' to go back.\n'x' to exit.\n1. Choose from a list of created users.\n2. Try creating a user with a different name.")
         next_step = input(">> ")
         if next_step == "1":
+            self.deserialize_users()
             self.view_users_menu()
             self.users_menu_next_step()
         elif next_step == "2":
@@ -132,14 +138,20 @@ class Birdyboard:
 # ############################
 # ######## VIEW USERS ########
 # ############################
+# NOTE: I am fully aware that this is a completely insecure way to handle a password system.
 
     def view_users_menu(self):
-        
-        self.deserialize_users()
+        """
+        prints a list of users (after deserialization) that are currently created on the app.
+        Arguments: None
+        """
         [print(str(self.users.index(user) + 1) + ". " + user["user_name"]) for user in self.users]
-        self.users_menu_next_step()
 
     def users_menu_next_step(self):
+        """
+        prints after 'view users menu'. creates input for which existing user is being selected and error handles.
+        arguments: None
+        """
         next_step = input("'b' to go back.\n'x' to exit.\nChoose a user to log into.\n>> ")
         if next_step == "b":
             print("going back.")
@@ -169,6 +181,11 @@ class Birdyboard:
                     pass
 
     def enter_password(self, user_index):
+        """
+        runs as part of users_menu_next_step. receives the index number error-handled by users_menu_next_step, receives user-input for a password and error handles that, and passes both into check_password to verify. if check_password returns true, takes you to the logged-in top-level menu. If it returns false, asks you again. Also gives you the option to go directly to the 'create new user' menu.
+
+        Argument: integer value that represents the index of a user in the self.users list.
+        """
         print("'x' to exit.\n'b' to go back.\n'n' to create new user.")
 
         password_try = input("password: ")
@@ -192,6 +209,12 @@ class Birdyboard:
                 self.enter_password()
 
     def check_password(self, user_index, password_try):
+        """
+        runs as part of enter_password. receives the user index number passed through from users_menu_next_step and the password entered in enter_password, and checks to see if they are equal. if they are, assigns the user and returns 'true' to enter_password for continuation.
+
+        Arguments: 1. integer value that represents the index of a user in the self.users list, and 2. string to check agains the password for the user with the matching index.
+
+        """
         current_user = self.users[user_index]
         if password_try == current_user["password"]:
             print("logging in to " + current_user["user_name"] + ".")
@@ -201,33 +224,22 @@ class Birdyboard:
             return False
 
 # ####################################
-# ######## VIEW PUBLIC CHIRPS ########
+# ######## VIEW CHIRPS ###############
 # ####################################
 
-    def view_public_chirps(self):
+    def view_chirps(self):
         """
-        this function is called if the user presses "3" on the unlogged-in menu, after deserialization. prints the first chirp of all public chirp threads, formatted to also show the user name, and print a readable index number for selection of 'view full chirp'.
+        this function is called if the user chooses a 'view chirp' option in the top level menu. prints the first chirp of all chirp threads (either 'public' or 'private' depending on what the top-level public_or_private variable is set to), formatted to also show the user name, and print a readable index number for selection of 'view full chirp'.
+
         Arguments: none.
         """
-        self.public_or_private = "public"
 
-        print("******PUBLIC CHIRPS******")
-        if len(self.chirps_library["public"]) > 0:
-            [print(str(self.chirps_library["public"].index(chirp) + 1) + ". " + chirp[0][0] + ": " + chirp[0][1]) for chirp in self.chirps_library["public"]]
+        print("******" + self.public_or_private + " CHIRPS******")
+        if len(self.chirps_library[self.public_or_private]) > 0:
+            [print(str(self.chirps_library[self.public_or_private].index(chirp) + 1) + ". " + chirp[0][0] + ": " + chirp[0][1]) for chirp in self.chirps_library[self.public_or_private]]
             print("\n")
         else:
-            print("no public chirps yet!\n")
-
-    def view_private_chirps(self):
-
-        self.public_or_private = "private"
-
-        print("******PRIVATE CHIRPS******")
-        if len(self.chirps_library["private"]) > 0:
-            [print(str(self.chirps_library["private"].index(chirp) + 1) + ". " + chirp[0][0] + ": " + chirp[0][1]) for chirp in self.chirps_library["private"]]
-            print("\n")
-        else:
-            print("no private chirps yet!\n")
+            print("no " + self.public_or_private + " chirps yet!\n")
 
     def view_chirps_next_step(self):
         """
@@ -261,7 +273,7 @@ class Birdyboard:
                     if int(next_step)-1 >= 0:
                         chirp_index = int(next_step)-1
                         # TODO: grab whether or not this is a public or private one and determine the correct private-tweet index.
-                        self.view_full_chirp(self.public_or_private, chirp_index)
+                        self.view_full_chirp(chirp_index)
                         self.chirp_thread_menu()
                     else:
                         print("your number is not in the list of chirps.")
@@ -272,7 +284,7 @@ class Birdyboard:
                 finally:
                     pass
 
-    def view_full_chirp(self, public_or_private, chirp_index):
+    def view_full_chirp(self, chirp_index):
         """
         displays a full chirp based on the index chosen in view_chirps_next_step. currently only handles public tweets. The numerical display of the public tweets makes sense, but grabbing the private tweets by index isn't going to work so I'm going to need to come up with another way to do that.
         Arguments: 1. string "public" or string "private" for location, 2. index number.
@@ -295,7 +307,7 @@ class Birdyboard:
         elif next_step == "b":
             print("going back.")
             self.chirp_to_display = None
-            self.view_public_chirps()
+            self.view_chirps()
             self.view_chirps_next_step()
         elif next_step == "1":
             self.new_chirp_menu()
@@ -322,11 +334,11 @@ class Birdyboard:
         else:
             if self.public_or_private == "public":
                 self.add_new_public_chirp_thread(chirp_to_add)
-                self.view_public_chirps()
+                self.view_chirps()
                 self.view_chirps_next_step()
             elif self.public_or_private == "private":
                 self.add_new_private_chirp_thread(other_user, chirp_to_add)
-                self.view_private_chirps()
+                self.view_chirps()
                 self.view_chirps_next_step()
 
 
