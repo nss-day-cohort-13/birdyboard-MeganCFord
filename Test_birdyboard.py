@@ -44,7 +44,13 @@ class Test_Birdyboard(unittest.TestCase):
         self.assertIn({"user_name": "name", "password": "password"}, self.user_add_test.users)
         self.assertEqual(self.user_add_test.user_name, "name")
 
-
+    def test_password_check(self):
+        self.password_test = Birdyboard()
+        self.password_test.deserialize_users()
+        self.password_test.check_password(0, "abcd")
+        self.assertEqual(self.password_test.user_name, None)
+        self.password_test.check_password(0, '1234')
+        self.assertEqual(self.password_test.user_name, "megan")
 
 if __name__ == '__main__':
     unittest.main()

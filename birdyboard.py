@@ -134,6 +134,7 @@ class Birdyboard:
 # ############################
 
     def view_users_menu(self):
+        
         self.deserialize_users()
         [print(str(self.users.index(user) + 1) + ". " + user["user_name"]) for user in self.users]
         self.users_menu_next_step()
@@ -141,6 +142,7 @@ class Birdyboard:
     def users_menu_next_step(self):
         next_step = input("'b' to go back.\n'x' to exit.\nChoose a user to log into.\n>> ")
         if next_step == "b":
+            print("going back.")
             self.unlogged_in_menu_print()
             self.unlogged_in_menu_next_step()
         elif next_step == "x":
@@ -156,7 +158,7 @@ class Birdyboard:
                 try:
                     if int(next_step)-1 >= 0:
                         user_index = int(next_step)-1
-                        current_user = self.users[user_index]
+                        self.enter_password(user_index)
                     else:
                         print("your number is not in the list of users.")
                         self.users_menu_next_step()
@@ -164,13 +166,39 @@ class Birdyboard:
                     print("your number is not in the list of users.")
                     self.users_menu_next_step()
                 finally:
-                    password_try = input("password: ")
-                    if password_try == current_user["password"]:
-                        self.current_user = current_user["user_name"]
-                        print("logging in")
-                        self.logged_in_menu_print()
-                        self.logged_in_menu_next_step()
+                    pass
 
+    def enter_password(self, user_index):
+        print("'x' to exit.\n'b' to go back.\n'n' to create new user.")
+
+        password_try = input("password: ")
+        if password_try == "b":
+            print("going back.")
+            self.view_users_menu()
+            self.users_menu_next_step()
+        elif password_try == "x":
+            print("goodbye.")
+            exit()
+        elif password_try == "n":
+            print("new user menu.")
+            self.create_a_user_menu()
+        else:
+            verify = self.check_password(user_index, password_try)
+            if verify is True:
+                self.logged_in_menu_print()
+                self.logged_in_menu_next_step()
+            else:
+                print("incorrect Password.")
+                self.enter_password()
+
+    def check_password(self, user_index, password_try):
+        current_user = self.users[user_index]
+        if password_try == current_user["password"]:
+            print("logging in to " + current_user["user_name"] + ".")
+            self.user_name = current_user["user_name"]
+            return True
+        else:
+            return False
 
 # ####################################
 # ######## VIEW PUBLIC CHIRPS ########
