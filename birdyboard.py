@@ -10,7 +10,7 @@ class Birdyboard:
         self.threader = Threader()
         self.usurper = Userper()
 
-        self.user_name = None
+        self.user_name = ""
         # these variables are assigned when a specific chirp thread is being viewed or added to.
         self.public_or_private = ""
 
@@ -19,10 +19,10 @@ class Birdyboard:
 # ###############################
 
         self.unlogged_in_menu = "Welcome. You are not logged in.\n1. new user\n2. log in\n3. view public chirps\n'x' to exit.\n"
-        self.logged_in_menu = "Welcome " + "megan or whatever" + "!\n1. log out\n2. view public chirps\n3. view private chirps\n4. New public chirp thread\n5. new private chirp thread\n'x' to exit.\n"
+        self.logged_in_menu = "Welcome " + self.user_name + "!\n1. log out\n2. view public chirps\n3. view private chirps\n4. New public chirp thread\n5. new private chirp thread\n'x' to exit.\n"
 
         def does_the_user_want_to_leave(self, input_text):
-            # TODO: put a thing on here that can run the exit protocol. use as a decorator.
+            # TODO: put a thing on here that can check if the input text was b or x. use as a menu decorator.
             pass
 
 # ############################################
@@ -31,7 +31,7 @@ class Birdyboard:
 
     def unlogged_in_menu_next_step(self):
         """
-        requests input for top level menu functionality while the user is not logged in. Currently does not do anything for user login. secret fourth option to add a chirp but later that will be only an option if you're logged in.
+        requests input for top level menu functionality while the user is not logged in.
         Arguments: none
         """
         next_step = input(">> ")
@@ -41,7 +41,7 @@ class Birdyboard:
         elif next_step == "2":  # log in to a current user.
             self.view_users_menu()
             self.users_menu_next_step()
-        elif next_step == "3":  # view public chirps. Will not have the option of commenting.
+        elif next_step == "3":  # view public chirps. Does not have the option of commenting.
             self.deserialize_chirps_library()
             self.public_or_private = "public"
             self.view_chirps()
