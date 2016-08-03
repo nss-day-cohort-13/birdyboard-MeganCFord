@@ -17,7 +17,11 @@ class Birdyboard:
 # ###############################
 
         self.unlogged_in_menu = "Welcome. You are not logged in.\n1. new user\n2. log in\n3. view public chirps\n'x' to exit.\n"
-        self.logged_in_menu = "Welcome " + self.user_name + "!\n1. log out\n2. view public chirps\n3. view private chirps\n4. New public chirp thread\n5. new private chirp thread\n'x' to exit.\n"
+        self.logged_in_menu = "Welcome " + "megan or whatever" + "!\n1. log out\n2. view public chirps\n3. view private chirps\n4. New public chirp thread\n5. new private chirp thread\n'x' to exit.\n"
+
+        def does_the_user_want_to_leave(self, input_text):
+            # TODO: put a thing on here that can run the exit protocol. use as a decorator.
+            pass
 
 # ############################################
 # ######## UNLOGGED IN TOP LEVEL MENU ########
@@ -457,26 +461,7 @@ class Birdyboard:
 # ######## SERIALIZATION ########
 # ###############################
 
-    def deserialize_chirps_library(self):
-        """
-        opens chirps.txt file. handles what happens if there are no chirps.
-        """
-        try:
-            with open('chirps.txt', 'rb') as chirps:
-                self.chirps_library = pickle.load(chirps)
-
-        except FileNotFoundError:
-                self.chirps_library = {"public": [], "private": []}
-        except EOFError:
-                self.chirps_library = {"public": [], "private": []}
-
-    def serialize_chirps_library(self):
-        """
-        saves new chirps to the chirps.txt file.
-        Arguments: none
-        """
-        with open("chirps.txt", "wb+") as chirps:
-            pickle.dump(self.chirps_library, chirps)
+    
 
     def deserialize_users(self):
         """
