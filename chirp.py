@@ -4,7 +4,7 @@ import uuid
 # TODO: add time stamp to chirps.
 
 
-class Chirp:
+class Chirper:
     """
     handles the retrieval and creation of individual 'chirp' messages in birdyboard.py.
     Methods: deserialize_chirps, generate_new_chirp, serialize_chirps, chirp_search.
@@ -20,7 +20,6 @@ class Chirp:
         try:
             with open('chirps.txt', 'rb') as chirps:
                 self.chirp_library = pickle.load(chirps)
-
         except FileNotFoundError:
                 self.chirp_library = {"sample_key": {"user": "a_user_id", "message": "text"}}
         except EOFError:

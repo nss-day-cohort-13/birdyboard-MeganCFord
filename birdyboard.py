@@ -1,16 +1,18 @@
 import pickle
+from chirp import *
 
 
 class Birdyboard:
 
     def __init__(self):
-        self.users = []
-        self.user_name = None
+        # construction from three subclasses.
+        self.chirper = Chirper()
+        self.threader = Threader()
+        self.usurper = Userper()
 
-        self.chirps_library = {"public": [], "private": []}
+        self.user_name = None
         # these variables are assigned when a specific chirp thread is being viewed or added to.
         self.public_or_private = ""
-        self.chirp_index = None
 
 # ###############################
 # ######## MENU PRINTERS ########

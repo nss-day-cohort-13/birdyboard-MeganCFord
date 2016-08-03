@@ -1,12 +1,12 @@
 import unittest
-from chirp import Chirp
+from chirp import *
 
 
 class Test_Chirp(unittest.TestCase):
 
     @classmethod
     def setUpClass(self):
-        self.tester = Chirp()
+        self.tester = Chirper()
 
     def test_that_chirp_defaults_are_correct(self):
         self.assertIsInstance(self.tester.chirp_library, dict)
@@ -25,6 +25,8 @@ class Test_Chirp(unittest.TestCase):
         self.tester.deserialize_chirps()
         sample_object = self.tester.chirp_search("sample_key")
         self.assertEqual(sample_object, {"user": "a_user_id", "message": "text"})
+        failure_object = self.tester.chirp_search("nonexistent")
+        selt.assertEqual(failure_object, None)
 
 
 if __name__ == '__main__':
