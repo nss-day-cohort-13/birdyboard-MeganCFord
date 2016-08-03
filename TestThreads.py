@@ -10,9 +10,9 @@ class Test_Chirp(unittest.TestCase):
 
     def test_that_thread_defaults_are_correct(self):
         self.assertIsInstance(self.tester.thread_library, dict)
-        self.assertEqual(len(self.tester.thread_library), 0)
 
     def test_thread_deserialization(self):
+        self.assertEqual(len(self.tester.thread_library), 0)
         self.tester.deserialize_threads()
         self.assertNotEqual(len(self.tester.thread_library), 0)
 

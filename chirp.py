@@ -55,7 +55,7 @@ class Chirper:
         """
         try:
             return self.chirp_library[unique_chirp_id]
-        except IndexError:
-            print("chirp not found.")
+        except KeyError:
+            return None
         finally:
             pass

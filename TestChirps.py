@@ -26,7 +26,7 @@ class Test_Chirp(unittest.TestCase):
         sample_object = self.tester.chirp_search("sample_key")
         self.assertEqual(sample_object, {"user": "a_user_id", "message": "text"})
         failure_object = self.tester.chirp_search("nonexistent")
-        selt.assertEqual(failure_object, None)
+        self.assertEqual(failure_object, None)
 
 
 if __name__ == '__main__':

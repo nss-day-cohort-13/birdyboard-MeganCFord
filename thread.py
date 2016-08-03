@@ -57,7 +57,7 @@ class Threader:
         """
         try:
             return self.thread_library[unique_thread_id]
-        except IndexError:
+        except KeyError:
             return None
         finally:
             pass
