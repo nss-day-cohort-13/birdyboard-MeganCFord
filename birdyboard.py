@@ -194,15 +194,21 @@ class Birdyboard:
         arguments: none
         """
 
-        # deal with the fact that un-logged in users can see public chirp threadsbut only logged-in users can add a new thread.
+        # deal with the fact that un-logged in users can see public chirp threadsbut only logged-in users can add a new thread. Also handle what happens if there are no threads to view.
         logged_in = False
         if len(self.user_name) > 0:
             logged_in = True
 
-        if logged_in is True:
-            thread = input("enter the number of the chirp you'd like to view the full thread for.\n'n' for new chirp thread.\n'b' to go back.\n'x' to exit.\n>> ")
+        print("'n' for new chirp thread.\n'b' to go back.\n'x' to exit.")
+
+        if len(self.threader.temp_threads) == 0:
+            print("no private chirps yet!")
         else:
-            thread = input("enter the number of the chirp you'd like to view the full thread for.\n'b to go back.\n'x' to exit.\n>> ")
+            print("enter the number of the chirp you'd like to view the full thread for.")
+        if logged_in is True:
+            thread = input(">> ")
+        else:
+            thread = input(">> ")
 
         # handle input.
         if thread == "b":  # go back to either logged in or unlogged in menu.
@@ -252,7 +258,7 @@ class Birdyboard:
         Arguments: none
         """
 
-        print("'b' to go back.\n'x' to exit.\n******NEW " + self.public_or_private + " CHIRP THREAD:******")
+        print("'b' to go back.\n'x' to exit.\n")
         next_step = input("thread title: >>")
         if next_step == "b":  # go back
             print("going back.")
