@@ -15,6 +15,8 @@ class Birdyboard:
         self.user_name = ""
         self.user_id = ""
 
+        self.thread_id = ""
+
         self.public_or_private = "public"
 
 # ###############################
@@ -100,24 +102,25 @@ class Birdyboard:
         menu that prints as part of creating a new user (accessible from unlogged_in_menu). requests a user input and checks the input against the users list to make sure it doesn't already exist. if it doesn't, continues to generate a new user and log them in, capturing their unique user ID and new user name to display.
         Arguments: None
         """
-        self.user_name = input("user name: ")
-        if self.user_name == "b":  # go back.
+        user_name = input("user name: ")
+        if user_name == "b":  # go back.
             print("going back")
-            self.user_name = ""
+            user_name = ""
             print(self.unlogged_in_menu)
             self.unlogged_in_menu_next_step()
-        elif self.user_name == "x":  # exit.
+        elif user_name == "x":  # exit.
             print("goodbye.")
             exit()
         else:  # check entered username agains list of existing usernames.
             self.usurper.deserialize_users()
             for key, value in self.usurper.user_library.items():
-                if self.user_name == value["user_name"]:
+                if user_name == value["user_name"]:
                     print("User name already taken!")
                     self.what_if_user_name_is_taken()
             full_name = input("your actual name: ")
-            self.user_id = self.usurper.generate_new_user(self.user_name, full_name)
-            print("logging in " + self.user_name + ".")
+            self.user_name = user_name
+            self.user_id = self.usurper.generate_new_user(user_name, full_name)
+            print("logging in " + user_name + ".")
             print(self.logged_in_menu)
             self.logged_in_menu_next_step()
 
@@ -176,7 +179,7 @@ class Birdyboard:
                     print(self.logged_in_menu)
                     self.logged_in_menu_next_step()
                 except KeyError:
-                    print("your number is not in the list of users.")
+                    print("your input is not in the list of users.")
                     self.users_menu_next_step()
                 finally:
                     pass
@@ -185,54 +188,120 @@ class Birdyboard:
 # ######## VIEW THREADS ###############
 # #####################################
 
-    def view_chirps_next_step(self):
+    def view_threads_next_step(self):
         """
-        menu that appears after all chirps are printed (view_chirps). Allows the user to view a full chirp thread based on the index, or to go back or exit.
+        menu that appears after all chirp threads are printed (threader.generate_threads_list). Allows the user to view a full chirp thread based on the index, or to go back or exit.
         arguments: none
         """
-        if user_name is not None:
-            next_step = input("enter the number of the chirp you'd like to view the full thread for.\n'n' for new chirp thread.\n'b' to go back.\n'x' to exit.\n>> ")
-        else: 
-            next_step = input("enter the number of the chirp you'd like to view the full thread for.\n'b to go back.\n'x' to exit.\n>> ")
 
-        if next_step == "b":
+        # deal with the fact that un-logged in users can see public chirp threadsbut only logged-in users can add a new thread.
+        logged_in = False
+        if len(self.user_name) > 0:
+            logged_in = True
+
+        if logged_in is True:
+            thread = input("enter the number of the chirp you'd like to view the full thread for.\n'n' for new chirp thread.\n'b' to go back.\n'x' to exit.\n>> ")
+        else:
+            thread = input("enter the number of the chirp you'd like to view the full thread for.\n'b to go back.\n'x' to exit.\n>> ")
+
+        # handle input.
+        if thread == "b":  # go back to either logged in or unlogged in menu.
             print("going back.")
-            if self.user_name is not None:
+            if logged_in is True:
                 print(self.logged_in_menu)
                 self.logged_in_menu_next_step()
             else:
                 print(self.unlogged_in_menu)
                 self.unlogged_in_menu_next_step()
-        elif next_step == "x":
+        elif thread == "x":  # exit.
             print("goodbye.")
             exit()
-        elif next_step == "n":
-            if self.user_name is not None:
-                self.new_chirp_thread_menu()
+        elif thread == "n":  # allow a user to create a new thread, but not an unlogged-in user.
+            if logged_in is True:
+                if self.public_or_private == "public":  # create a new public or private thread.
+                    self.new_public_thread_menu()
+                else:
+                    # self.usurper.generate_users_list()
+                    self.new_private_thread_menu()
             else:
                 pass
         else:  # select the number of the printed tweet.
             try:
-                next_step == int(next_step)
+                thread = int(thread)
             except ValueError:
                 print("you didn't enter a number.")
-                self.view_chirps_next_step()
+                self.view_threads_thread()
             finally:
-                # TODO: mess with this until it works.
-                if int(next_step)-1 >= 0:
-                    try:
-                        self.chirp_index = int(next_step)-1
-                        checker = self.chirps_library[self.public_or_private][self.chirp_index]
-                        self.view_full_chirp()
+                try:
+                    self.thread_id = self.threader.temp_threads[thread]
+                    self.chirper.generate_chirp_list(self.thread_id)
+                    self.full_chirp_menu()
+                except KeyError:
+                    print("your input is not in the list of threads.")
+                    self.view_threads_next_step()
+                finally:
+                    pass
+
+# ##################################
+# ######## NEW CHIRP THREAD ########
+# ##################################
+
+    def new_public_thread_menu(self):
+        """
+        Prints when 'new public chirp' is chosen from top level menu, or from view chirps menu when self.public_or_private is set to public. Requests title text input and sends to thread.py appropriately.
+        Arguments: none
+        """
+
+        print("'b' to go back.\n'x' to exit.\n******NEW " + self.public_or_private + " CHIRP THREAD:******")
+        next_step = input("thread title: >>")
+        if next_step == "b":  # go back
+            print("going back.")
+            print(self.logged_in_menu)
+            self.logged_in_menu_next_step()
+        elif next_step == "x":  # exit
+            print("goodbye.")
+            exit()
+        else:
+            self.thread_id = self.threader.generate_new_thread(next_step)
+            self.chirper.generate_chirp_list(self.thread_id)
+            self.full_chirp_menu()
+
+    def new_private_thread_menu(self):
+        """
+        Prints when 'new private chirp' is chosen from top level menu, or from view chirps menu when self.public_or_private is set to private. handles who to send the chirp to, title text input, and sends both to thread.py appropriately.
+        Arguments: none
+        """
+        next_step = input("'b' to go back.\n'x' to exit.\nTo which user would you like to send your chirp?\n>> ")
+        if next_step == "b":  # go back
+            print("going back.")
+        elif next_step == "x":  # exit
+            print("goodbye.")
+            exit()
+        else:
+            try:
+                next_step = int(next_step)
+            except ValueError:
+                print("you didn't enter a number.")
+                self.private_chirp_thread_menu()
+            finally:
+                try:
+                    user_two = self.usurper.temp_users[next_step]
+                except KeyError:
+                    print("your number is not in the list of users.")
+                    self.new_private_menu()
+                finally:
+                    title = input("what is the title of your new conversation? \n>> ")
+                    if title == "b":  # go back
+                        print("going back.")
+                        self.new_private_thread_menu()
+                    elif title == "x":  # exit
+                        print("goodbye.")
+                        exit()
+                    else:  # send all the stuff to generate a new private chirp thread.
+                        self.thread_id = self.threader.generate_new_thread(title, (self.user_id, user_two))
+                        self.chirper.generate_chirp_list(self.thread_id)
                         self.full_chirp_menu()
-                    except IndexError:
-                        print("your number is not in the list of chirps.")
-                        self.view_chirps_next_step()
-                    finally:
-                        pass
-                else:
-                    print("your number is not in the list of chirps.")
-                    self.view_chirps_next_step()
+
 
 # ########################################
 # ######## VIEW FULL CHIRP THREAD ########
@@ -277,7 +346,7 @@ class Birdyboard:
             self.chirp_thread_menu()
 
 # #############################
-# ######## ADD COMMENT ########
+# ######## ADD CHIRP ########
 # #############################
 
     def add_to_chirp_menu(self):
@@ -309,120 +378,6 @@ class Birdyboard:
         elif self.public_or_private == "private":
             self.chirps_library[self.public_or_private][self.current_index]["chirps"].append(self.user_name, text)
         self.serialize_chirps_library()
-
-
-# ##################################
-# ######## NEW CHIRP THREAD ########
-# ##################################
-
-    def new_chirp_thread_menu(self):
-        """
-        prints when 'new chirp' is chosen from top level menu. Requests input text and handles, based on whether the thread will be public or private, whether to send the chirp directly to serialization or to request a user to send a private chirp to.
-        Arguments: none
-        """
-
-        print("'b' to go back.\n'x' to exit.\n******NEW " + self.public_or_private + " CHIRP THREAD:******")
-        next_step = input("title text: >>")
-        if next_step == "b":
-            print("going back.")
-            print(self.logged_in_menu)
-            self.logged_in_menu_next_step()
-        elif next_step == "x":
-            print("goodbye.")
-            exit()
-        else:
-            if self.public_or_private == "private":
-                self.generate_users_menu()
-                self.private_chirp_thread_menu()
-            else:
-                formatted_chirp = [(self.user_name, next_step)]
-                self.add_new_thread(formatted_chirp)
-                self.view_chirps()
-                self.view_chirps_next_step()
-
-    def private_chirp_thread_menu(self):
-        """
-        menu that prints when you're creating a new private chirp.
-        requests input for the name of the second user you'd like to chirp to- keeping in mind that you can only chirp to people who already exist-
-        the text that you'd like to send to them, formats the whole thing,
-        and adds that to the add_new_thread function.
-
-        Arguments: none
-        """
-        next_step = input("'b' to go back.\n'x' to exit.\nTo which user would you like to send your chirp?\n>> ")
-        if next_step == "b":
-            print("going back.")
-        elif next_step == "x":
-            print("goodbye.")
-            exit()
-        else:
-            try:
-                int_next_step = int(next_step)-1
-            except ValueError:
-                print("you didn't enter a number.")
-                self.private_chirp_thread_menu()
-            finally:
-                try:
-                    if int_next_step < 0:
-                        print("your number is not in the list of users.")
-                        self.private_chirp_thread_menu()
-                    else:
-                        user_two = self.users[next_step]
-                except IndexError:
-                    print("your number is not in the list of users.")
-                    self.private_chirp_thread_menu
-                finally:
-                    text = input("what would you like to say? \n>> ")
-                    if next_step == "b":
-                        print("going back.")
-                        print(self.logged_in_menu)
-                        self.logged_in_menu_next_step()
-                    elif next_step == "x":
-                        print("goodbye.")
-                        exit()
-                    else:
-                        formatted_chirp = {"users": (self.user_name, user_two["user_name"]), "chirps": [(self.user_name, text)]}
-                        self.add_new_thread(formatted_chirp)
-                        self.view_chirps()
-                        self.view_chirps_next_step()
-
-    def add_new_thread(self, formatted_chirp):
-        """
-        runs inside 'new chirp menu's, both public and private. adds a new chirp to a selected public chirp thread list, using current user name and text passed in from menu. also makes sure the .txt file is as up to date as possible.
-
-        Arguments: formatted new-thread object from either new_chirp_thread_menu or private_chirp_thread_menu.
-
-        FORMAT: for a public chirp, it's simply a 2-item tuple in a list [(user_name, text)]. for a private chirp, it's a dictionary: {users:(user1, user2), "chirps": (user1, text)}
-        """
-        self.deserialize_chirps_library()
-        self.chirps_library[self.public_or_private].append(formatted_chirp)
-        self.serialize_chirps_library()
-
-# ###############################
-# ######## SERIALIZATION ########
-# ###############################
-
-    
-
-    def deserialize_users(self):
-        """
-        opens users.txt file. handles what happens if there are no users.
-        """
-        try:
-            with open("users.txt", "rb") as users:
-                self.users = pickle.load(users)
-        except FileNotFoundError:
-                self.users = [{"user_name": "megan", "password": "1234"}]
-        except EOFError:
-                self.users = [{"user_name": "megan", "password": "1234"}]
-
-    def serialize_users(self):
-        """
-        saves new users to the users.txt file.
-        Arguments: none
-        """
-        with open("users.txt", "wb+") as users:
-            pickle.dump(self.users, users)
 
 
 if __name__ == '__main__':
