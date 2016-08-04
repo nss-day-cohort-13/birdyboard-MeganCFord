@@ -376,7 +376,7 @@ class Birdyboard:
                 self.threader.generate_public_threads_list()
             else:
                 self.threader.generate_private_threads_list(self.user_id)
-            self.view_chirps_next_step()
+            self.view_threads_menu()
 
         elif next_step == "x":  # exit
             print("goodbye.")
