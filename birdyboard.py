@@ -26,10 +26,6 @@ class Birdyboard:
         self.unlogged_in_menu = "Welcome. You are not logged in.\n1. new user\n2. log in\n3. view public chirps\n'x' to exit.\n"
         self.logged_in_menu = "1. log out\n2. view public chirps\n3. view private chirps\n4. New public chirp thread\n5. new private chirp thread\n'x' to exit.\n"
 
-        def does_the_user_want_to_leave(self, input_text):
-            # TODO: put a thing on here that can check if the input text was b or x. use as a menu decorator.
-            pass
-
 # ############################################
 # ######## UNLOGGED IN TOP LEVEL MENU ########
 # ############################################
@@ -227,7 +223,7 @@ class Birdyboard:
                 if self.public_or_private == "public":  # create a new public or private thread.
                     self.new_public_thread_menu()
                 else:
-                    # self.usurper.generate_users_list()
+                    self.usurper.generate_users_list()
                     self.new_private_thread_menu()
             else:
                 pass
@@ -305,48 +301,45 @@ class Birdyboard:
                         exit()
                     else:  # send all the stuff to generate a new private chirp thread.
                         self.thread_id = self.threader.generate_new_thread(title, (self.user_id, user_two))
+                        print(self.threader.thread_library[self.thread_id]["title"] + ":")
                         self.chirper.generate_chirp_list(self.thread_id)
                         self.full_chirp_menu()
 
 
 # ########################################
-# ######## VIEW FULL CHIRP THREAD ########
+# ######## VIEW CHIRPS ########
 # ########################################
-
-    def view_full_chirp(self):
-        """
-        displays a full chirp based on the index chosen in view_chirps_next_step- public or private depending on top public_or_private variable.
-        Arguments: none
-        """
-        if self.public_or_private == "public":
-            [print(chirp[0] + ": " + chirp[1]) for chirp in self.chirps_library[self.public_or_private][self.chirp_index]]
-        elif self.public_or_private == "private":
-            [print(chirp[0] + ": " + chirp[1]) for chirp in self.chirps_library[self.public_or_private][self.chirp_index]["chirps"]]
 
     def full_chirp_menu(self):
         """
         prints after view_full_chirp to ask whether the user would like to go back, exit, or add to the chirp thread.
         arguments: none
         """
-        if self.user_name is not None:
+        if len(self.user_name) > 0:
             next_step = input("1. add a new chirp to this thread.\n'b' to go back.\n'x' to exit.\n>> ")
         else:
             next_step = input("'b' to go back.\n'x' to exit.\n>> ")
 
-        if next_step == "b":
+        if next_step == "b":  # go back
             print("going back.")
-            self.current_chirp = None
-            self.view_chirps()
+            self.thread_id = ""
+            if self.public_or_private == "public":
+                self.threader.generate_public_threads_list()
+            else:
+                self.threader.generate_private_threads_list(self.user_id)
             self.view_chirps_next_step()
-        elif next_step == "x":
+
+        elif next_step == "x":  # exit
             print("goodbye.")
             exit()
-        elif next_step == "1":
+
+        elif next_step == "1":  # add a chirp
             if self.user_name is not None:
                 self.add_to_chirp_menu()
             else:
                 print("command not recognized.")  # to keep an un-logged in user from pressing 1 and finding a SECRET INROAD to chirping.
                 self.chirp_thread_menu()
+
         else:
             print("command not recognized.")
             self.chirp_thread_menu()
@@ -357,34 +350,21 @@ class Birdyboard:
 
     def add_to_chirp_menu(self):
         """
-        requests input from the user for a new chirp to add to the curreng thread. error handles. Runs as part of full_chirp_menu.
+        requests input from the user for a new chirp to add to the current thread. error handles. Runs as part of full_chirp_menu, automatically sends user ID and thread ID to chirper class.
         Arguments: none
         """
         chirp_to_add = input("'b' to go back.\n'x' to exit.\nchirp text: >> ")
-        if chirp_to_add == "b":
+        if chirp_to_add == "b":  # go back.
             print("going back.")
             self.chirp_thread_menu()
-        elif chirp_to_add == "x":
+        elif chirp_to_add == "x":  # exit.
             print("goodbye.")
             exit()
         else:
-            self.add_to_chirp(chirp_to_add)
-        self.view_full_chirp()
+            self.chirper.generate_new_chirp(self.user_name, self.thread_id, chirp_to_add)
+        print(self.threader.thread_library[self.thread_id]["title"] + ":")
+        self.chirper.generate_chirp_list(self.thread_id)
         self.full_chirp_menu()
-
-    def add_to_chirp(self, text):
-        """
-        runs as part of add_to_chirp_menu. adds a chirp to the current thread (top level variable public_or_private and current_index).
-
-        Arguments: string text. ex: "this is a chirp."
-        """
-        self.deserialize_chirps_library()
-        if self.public_or_private == "public":
-            self.chirps_library[self.public_or_private][self.current_index].append(self.user_name, text)
-        elif self.public_or_private == "private":
-            self.chirps_library[self.public_or_private][self.current_index]["chirps"].append(self.user_name, text)
-        self.serialize_chirps_library()
-
 
 if __name__ == '__main__':
     app = Birdyboard()
