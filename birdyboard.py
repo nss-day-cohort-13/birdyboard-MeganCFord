@@ -14,7 +14,7 @@ class Birdyboard:
     when a new private thread is created, the UUIDs of the two associated users are saved into its information so it is only accessible through its associated user set,
     and when a new chirp is created, the UUID of the thread is saved into its information so it is only accessible through its associated thread.
 
-    Methods: unlogged_in_menu, logged_in_menu, create_a_user_menu, what_if_user_name_is_taken, users_menu, view_threads_menu, new_public_thread_menu, new_private_thread_menu, full_chirp_menu, and add_to_chirp_menu.
+    Methods: unlogged_in_menu, logged_in_menu, create_a_user_menu, what_if_user_name_is_taken, users_menu, view_threads_menu, new_public_thread_menu, new_private_thread_menu, what_if_thread_name_is_taken, full_chirp_menu, and add_to_chirp_menu.
 
     """
 
@@ -275,7 +275,12 @@ class Birdyboard:
         elif next_step == "x":  # exit
             print("goodbye.")
             exit()
-        else:
+        else:  # check entered username agains list of existing usernames.
+            self.threader.deserialize_threads()
+            for key, value in self.threader.thread_library.items():
+                if next_step == value["title"]:
+                    print("thread title already taken!")
+                    self.what_if_thread_name_is_taken()
             self.thread_id = self.threader.generate_new_thread(next_step)
             self.chirper.generate_chirp_list(self.thread_id)
             self.full_chirp_menu()
@@ -311,12 +316,42 @@ class Birdyboard:
                     elif title == "x":  # exit
                         print("goodbye.")
                         exit()
-                    else:  # send all the stuff to generate a new private chirp thread.
+                    else:  # check entered username agains list of existing usernames.
+                        self.threader.deserialize_threads()
+                        for key, value in self.threader.thread_library.items():
+                            if next_step == value["title"] and self.user_id in value["allowed_users"]:
+                                print("thread title already taken!")
+                                self.what_if_thread_name_is_taken()
+                        # send all the stuff to generate a new private chirp thread.
                         self.thread_id = self.threader.generate_new_thread(title, (self.user_id, user_two))
                         print(self.threader.thread_library[self.thread_id]["title"] + ":")
                         self.chirper.generate_chirp_list(self.thread_id)
                         self.full_chirp_menu()
 
+    def what_if_thread_name_is_taken(self):
+        """
+        Menu that runs if a user enters a thread title in new_public_thread_menu or new_private_thread_menu that is already taken (in the case of a private thread, only in the threads that include the current user). Requests input from the user and handles whether they would like to go back, see a list of threads to choose from, try again to create a new thread, or exit.
+        Arguments: None
+        """
+        print("'b' to go back.\n'x' to exit.\n1. Choose from a list of created threads.\n2. Try creating a thread with a different name.")
+        next_step = input(">> ")
+        if next_step == "1":  # choose from a list of created threads.
+            self.usurper.generate_threads_list()
+            self.view_threads_menu()
+        elif next_step == "2":  # try creating a new thread again.
+            if self.public_or_private == "public":
+                self.new_public_thread_menu()
+            else:
+                self.new_private_thread_menu()
+        elif next_step == "b":  # go back.
+            print("going back.")
+            self.view_threads_menu()
+        elif next_step == "x":  # exit.
+            print("goodbye.")
+            exit()
+        else:  # error handle.
+            print("command not found.")
+            self.what_if_thread_name_is_taken()
 
 # ########################################
 # ######## VIEW CHIRPS ########
