@@ -1,5 +1,7 @@
 import pickle
 from chirp import *
+from thread import *
+from user import *
 
 
 class Birdyboard:
@@ -8,11 +10,12 @@ class Birdyboard:
         # construction from three subclasses.
         self.chirper = Chirper()
         self.threader = Threader()
-        self.usurper = Userper()
+        self.usurper = Usurper()
 
         self.user_name = ""
+        self.user_id = ""
         # these variables are assigned when a specific chirp thread is being viewed or added to.
-        self.public_or_private = ""
+        self.public_or_private = "public"
 
 # ###############################
 # ######## MENU PRINTERS ########
@@ -31,7 +34,7 @@ class Birdyboard:
 
     def unlogged_in_menu_next_step(self):
         """
-        requests input for top level menu functionality while the user is not logged in.
+        requests input for top level menu functionality while the user is not logged in. Handles whether the user would like to log in, create a user, exit, or view public chirps.
         Arguments: none
         """
         next_step = input(">> ")
@@ -42,7 +45,6 @@ class Birdyboard:
             self.view_users_menu()
             self.users_menu_next_step()
         elif next_step == "3":  # view public chirps. Does not have the option of commenting.
-            self.deserialize_chirps_library()
             self.public_or_private = "public"
             self.view_chirps()
             self.view_chirps_next_step()
@@ -58,6 +60,10 @@ class Birdyboard:
 # ##########################################
 
     def logged_in_menu_next_step(self):
+        """
+        Top level menu to print when user logs in or when logged in user traverses back to top-level. requests a next-step input and handles whether the user would like to log out, exit, view a public chirp, view a private chirp, or create a new public or private thread.
+        Arguments: None
+        """
         next_step = input(">> ")
         if next_step == "1":  # log out
             print('logging out.')
@@ -65,12 +71,12 @@ class Birdyboard:
             print(self.unlogged_in_menu)
             self.unlogged_in_menu_next_step()
         elif next_step == "2":  # view public threads.
-            self.deserialize_chirps_library()
             self.public_or_private = "public"
             self.view_chirps()
             self.view_chirps_next_step()
         elif next_step == "3":  # view private threads.
             self.public_or_private = "private"
+            self.view_chirps()
             self.view_chirps_next_step()
         elif next_step == "4":  # new public thread.
             self.public_or_private = "public"
@@ -90,32 +96,39 @@ class Birdyboard:
 # ###############################
 
     def create_a_user_menu(self):
-        self.deserialize_users()
-        user_name = input("user name: ")
-        if user_name == "b":
+        """
+        menu that prints as part of creating a new user (accessible from unlogged_in_menu). requests a user input and checks the input against the users list to make sure it doesn't already exist. if it doesn't, continues to generate a new user and log them in, capturing their unique user ID and new user name to display.
+        Arguments: None
+        """
+        self.user_name = input("user name: ")
+        if self.user_name == "b":  # go back.
             print("going back")
+            self.user_name = ""
             print(self.unlogged_in_menu)
             self.unlogged_in_menu_next_step()
-        elif user_name == "x":
+        elif self.user_name == "x":  # exit.
             print("goodbye.")
             exit()
-        else:
-            for user in self.users:
-                if user_name == user["user_name"]:
+        else:  # check entered username agains list of existing usernames.
+            self.usurper.deserialize_users()
+            for key, value in self.usurper.user_library.items():
+                if self.user_name == value["user_name"]:
                     print("User name already taken!")
                     self.what_if_user_name_is_taken()
-            password = input("password: ")
-            self.add_new_user(user_name, password)
-            print("logging in " + user_name + ".")
+            full_name = input("your actual name: ")
+            self.user_id = self.usurper.generate_new_user(self.user_name, full_name)
+            print("logging in " + self.user_name + ".")
             print(self.logged_in_menu)
             self.logged_in_menu_next_step()
 
     def what_if_user_name_is_taken(self):
+        """
+        menu that runs if a user enters a username in create_a_user_menu that is already taken. Requests input from the user and handles whether they would like to go back, see a list of users to choose from, try again to create a new user, or exit.
+        Arguments: None
+        """
         print("'b' to go back.\n'x' to exit.\n1. Choose from a list of created users.\n2. Try creating a user with a different name.")
         next_step = input(">> ")
-        if next_step == "1":
-            self.deserialize_users()
-            self.view_users_menu()
+        if next_step == "1": 
             self.users_menu_next_step()
         elif next_step == "2":
             self.create_a_user_menu()
@@ -130,12 +143,6 @@ class Birdyboard:
             print("command not found.")
             self.what_if_user_name_is_taken()
 
-    def add_new_user(self, user_name, password):
-        self.deserialize_users()
-        self.users.append({"user_name": user_name, "password": password})
-        self.serialize_users()
-        self.user_name = user_name
-
 
 # ############################
 # ######## VIEW USERS ########
@@ -147,7 +154,7 @@ class Birdyboard:
         prints a list of users (after deserialization) that are currently created on the app.
         Arguments: None
         """
-        [print(str(self.users.index(user) + 1) + ". " + user["user_name"]) for user in self.users]
+        [print(str(self.usurper.user_library.index(user) + 1) + ". " + user["user_name"]) for user in self.usurper.user_library]
 
     def users_menu_next_step(self):
         """
