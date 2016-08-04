@@ -46,8 +46,8 @@ class Birdyboard:
             self.users_menu_next_step()
         elif next_step == "3":  # view public chirps. Does not have the option of commenting.
             self.public_or_private = "public"
-            self.view_chirps()
-            self.view_chirps_next_step()
+            self.threader.generate_public_threads_list()
+            self.view_threads_next_step()
         elif next_step == "x":  # exit.
             print("goodbye.")
             exit()
@@ -72,12 +72,12 @@ class Birdyboard:
             self.unlogged_in_menu_next_step()
         elif next_step == "2":  # view public threads.
             self.public_or_private = "public"
-            self.view_chirps()
-            self.view_chirps_next_step()
+            self.threader.generate_public_threads_list()
+            self.view_threads_next_step()
         elif next_step == "3":  # view private threads.
             self.public_or_private = "private"
-            self.view_chirps()
-            self.view_chirps_next_step()
+            self.threader.generate_private_threads_list(self.user_id)
+            self.view_threads_next_step()
         elif next_step == "4":  # new public thread.
             self.public_or_private = "public"
             self.new_chirp_menu()
@@ -150,6 +150,10 @@ class Birdyboard:
 # ############################
 
     def users_menu_next_step(self):
+        """
+        prints after list of users is generated to gather what the user would like to do next- go back, exit, or log in to one of the users.
+        arguments: None
+        """
         next_step = input("'b' to go back.\n'x' to exit.\nChoose a user to log into.\n>> ")
         if next_step == "b":  # go back.
             print("going back.")
@@ -177,25 +181,9 @@ class Birdyboard:
                 finally:
                     pass
 
-# ########################################
-# ######## VIEW ALL CHIRPS ###############
-# ########################################
-
-    def view_chirps(self):
-        """
-        this function is called if the user chooses a 'view chirp' option in the top level menu. prints the first chirp of all chirp threads (either 'public' or 'private' depending on what the top-level public_or_private variable is set to), formatted to also show the user name, and print a readable index number for selection of 'view full chirp'.
-
-        Arguments: none.
-        """
-        print("******" + self.public_or_private.upper() + " CHIRPS******")
-        if len(self.chirps_library[self.public_or_private]) > 0:
-            if self.public_or_private == "public":
-                [print(str(self.chirps_library[self.public_or_private].index(chirp) + 1) + ". " + chirp[0][0] + ": " + chirp[0][1]) for chirp in self.chirps_library[self.public_or_private]]
-                print("\n")
-            elif self.public_or_private == "private":
-                [print(str(self.chirps_library[self.public_or_private].index(chirp) + 1) + ". " + chirp["chirps"][0][0] + ": " + chirp["chirps"][0][1]) for chirp in self.chirps_library[self.public_or_private] if self.user_name in chirp["users"]]
-        else:
-            print("no " + self.public_or_private + " chirps yet!\n")
+# #####################################
+# ######## VIEW THREADS ###############
+# #####################################
 
     def view_chirps_next_step(self):
         """
