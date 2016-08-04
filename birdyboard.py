@@ -7,14 +7,14 @@ from user import *
 class Birdyboard:
 
     def __init__(self):
-        # construction from three subclasses.
+        # construction of three subclasses.
         self.chirper = Chirper()
         self.threader = Threader()
         self.usurper = Usurper()
 
         self.user_name = ""
         self.user_id = ""
-        # these variables are assigned when a specific chirp thread is being viewed or added to.
+
         self.public_or_private = "public"
 
 # ###############################
@@ -22,7 +22,7 @@ class Birdyboard:
 # ###############################
 
         self.unlogged_in_menu = "Welcome. You are not logged in.\n1. new user\n2. log in\n3. view public chirps\n'x' to exit.\n"
-        self.logged_in_menu = "Welcome " + self.user_name + "!\n1. log out\n2. view public chirps\n3. view private chirps\n4. New public chirp thread\n5. new private chirp thread\n'x' to exit.\n"
+        self.logged_in_menu = "1. log out\n2. view public chirps\n3. view private chirps\n4. New public chirp thread\n5. new private chirp thread\n'x' to exit.\n"
 
         def does_the_user_want_to_leave(self, input_text):
             # TODO: put a thing on here that can check if the input text was b or x. use as a menu decorator.
@@ -42,7 +42,7 @@ class Birdyboard:
             print("creating a new user.")
             self.create_a_user_menu()
         elif next_step == "2":  # log in to a current user.
-            self.view_users_menu()
+            self.usurper.generate_users_list()
             self.users_menu_next_step()
         elif next_step == "3":  # view public chirps. Does not have the option of commenting.
             self.public_or_private = "public"
@@ -67,7 +67,7 @@ class Birdyboard:
         next_step = input(">> ")
         if next_step == "1":  # log out
             print('logging out.')
-            self.user_name = None
+            self.user_name = ""
             print(self.unlogged_in_menu)
             self.unlogged_in_menu_next_step()
         elif next_step == "2":  # view public threads.
@@ -123,23 +123,24 @@ class Birdyboard:
 
     def what_if_user_name_is_taken(self):
         """
-        menu that runs if a user enters a username in create_a_user_menu that is already taken. Requests input from the user and handles whether they would like to go back, see a list of users to choose from, try again to create a new user, or exit.
+        Menu that runs if a user enters a username in create_a_user_menu that is already taken. Requests input from the user and handles whether they would like to go back, see a list of users to choose from, try again to create a new user, or exit.
         Arguments: None
         """
         print("'b' to go back.\n'x' to exit.\n1. Choose from a list of created users.\n2. Try creating a user with a different name.")
         next_step = input(">> ")
-        if next_step == "1": 
+        if next_step == "1":  # choose from a list of created users.
+            self.usurper.generate_users_list()
             self.users_menu_next_step()
-        elif next_step == "2":
+        elif next_step == "2":  # try creating a new user again.
             self.create_a_user_menu()
-        elif next_step == "b":
+        elif next_step == "b":  # go back.
             print("going back.")
             print(self.unlogged_in_menu)
             self.unlogged_in_menu_next_step()
-        elif next_step == "x":
+        elif next_step == "x":  # exit.
             print("goodbye.")
             exit()
-        else:
+        else:  # error handle.
             print("command not found.")
             self.what_if_user_name_is_taken()
 
@@ -147,91 +148,34 @@ class Birdyboard:
 # ############################
 # ######## VIEW USERS ########
 # ############################
-# I am fully aware that this is a completely insecure way to handle a password system.
-
-    def view_users_menu(self):
-        """
-        prints a list of users (after deserialization) that are currently created on the app.
-        Arguments: None
-        """
-        [print(str(self.usurper.user_library.index(user) + 1) + ". " + user["user_name"]) for user in self.usurper.user_library]
 
     def users_menu_next_step(self):
-        """
-        prints after 'view users menu'. creates input for which existing user is being selected and error handles.
-        arguments: None
-        """
         next_step = input("'b' to go back.\n'x' to exit.\nChoose a user to log into.\n>> ")
-        if next_step == "b":
+        if next_step == "b":  # go back.
             print("going back.")
             print(self.unlogged_in_menu)
             self.unlogged_in_menu_next_step()
-        elif next_step == "x":
+        elif next_step == "x":  # exit
             print("goodbye.")
             exit()
         else:
-            try:
+            try:  # make sure input is a number.
                 next_step = int(next_step)
             except ValueError:
                 print("you didn't enter a number.")
                 self.users_menu_next_step()
             finally:
-                # TODO: fix this. it doesn't work.
                 try:
-                    if int(next_step)-1 >= 0:
-                        user_index = int(next_step)-1
-                        self.enter_password(user_index)
-                    else:
-                        print("your number is not in the list of users.")
-                        self.users_menu_next_step()
-                except IndexError:
+                    self.user_id = self.usurper.temp_users[next_step]
+                    self.user_name = self.usurper.user_library[self.user_id]["user_name"]
+                    print("logging in " + self.usurper.user_library[self.user_id]["real_name"] + "\n Welcome " + self.user_name + "!")
+                    print(self.logged_in_menu)
+                    self.logged_in_menu_next_step()
+                except KeyError:
                     print("your number is not in the list of users.")
                     self.users_menu_next_step()
                 finally:
                     pass
-
-    def enter_password(self, user_index):
-        """
-        runs as part of users_menu_next_step. receives the index number error-handled by users_menu_next_step, receives user-input for a password and error handles that, and passes both into check_password to verify. if check_password returns true, takes you to the logged-in top-level menu. If it returns false, asks you again. Also gives you the option to go directly to the 'create new user' menu.
-
-        Argument: integer value that represents the index of a user in the self.users list.
-        """
-        print("'x' to exit.\n'b' to go back.\n'n' to create new user.")
-
-        password_try = input("password: ")
-        if password_try == "b":
-            print("going back.")
-            self.view_users_menu()
-            self.users_menu_next_step()
-        elif password_try == "x":
-            print("goodbye.")
-            exit()
-        elif password_try == "n":
-            print("new user menu.")
-            self.create_a_user_menu()
-        else:
-            verify = self.check_password(user_index, password_try)
-            if verify is True:
-                print(self.logged_in_menu)
-                self.logged_in_menu_next_step()
-            else:
-                print("incorrect Password.")
-                self.enter_password()
-
-    def check_password(self, user_index, password_try):
-        """
-        runs as part of enter_password. receives the user index number passed through from users_menu_next_step and the password entered in enter_password, and checks to see if they are equal. if they are, assigns the user and returns 'true' to enter_password for continuation.
-
-        Arguments: 1. integer value that represents the index of a user in the self.users list, and 2. string to check agains the password for the user with the matching index.
-
-        """
-        current_user = self.users[user_index]
-        if password_try == current_user["password"]:
-            print("logging in to " + current_user["user_name"] + ".")
-            self.user_name = current_user["user_name"]
-            return True
-        else:
-            return False
 
 # ########################################
 # ######## VIEW ALL CHIRPS ###############
@@ -400,7 +344,7 @@ class Birdyboard:
             exit()
         else:
             if self.public_or_private == "private":
-                self.view_users_menu()
+                self.generate_users_menu()
                 self.private_chirp_thread_menu()
             else:
                 formatted_chirp = [(self.user_name, next_step)]
