@@ -20,9 +20,9 @@ class Threader:
             with open('threads.txt', 'rb') as threads:
                 self.thread_library = pickle.load(threads)
         except FileNotFoundError:
-                self.thread_library = {"sample_key": {"title": "sample title", "public": True, "chirps": []}}
+                self.thread_library = {"sample_key": {"title": "sample title", "public": True}}
         except EOFError:
-                self.thread_library = {"sample_key": {"title": "sample title", "public": True, "chirps": []}}
+                self.thread_library = {"sample_key": {"title": "sample title", "public": True}}
         finally:
             pass
 
@@ -35,7 +35,7 @@ class Threader:
         thread_key = str(uuid.uuid4())
 
         self.deserialize_threads()
-        self.thread_library[thread_key] = {"title": title, "public": True, "chirps": []}
+        self.thread_library[thread_key] = {"title": title, "public": True}
         if user_ids is not None:
             self.thread_library[thread_key]["public"] = False
             self.thread_library[thread_key]["allowed_users"] = user_ids
