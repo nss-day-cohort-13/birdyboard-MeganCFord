@@ -4,8 +4,9 @@ import uuid
 
 class Usurper:
     """
-    handles the retrieval and creation of individual 'chirp' messages in birdyboard.py.
-    Methods: deserialize_chirps, generate_new_chirp, serialize_chirps, chirp_search.
+    handles the retrieval and creation of users in birdyboard.py.
+    all users are saved into a dictionary with a unique UUID key.
+    Methods: deserialize_users, generate_new_user, serialize_users, generate_users_list.
     """
 
     def __init__(self):

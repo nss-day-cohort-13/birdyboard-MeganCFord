@@ -1,13 +1,12 @@
 import pickle
 import uuid
 
-# TODO: add time stamp to chirps.
-
 
 class Chirper:
     """
     handles the retrieval and creation of individual 'chirp' messages in birdyboard.py.
-    Methods: deserialize_chirps, generate_new_chirp, serialize_chirps, chirp_search.
+    all chirps are saved into a dictionary with a unique UUID key, and a unique thread ID from thread.py.
+    Methods: deserialize_chirps, generate_new_chirp, serialize_chirps, generate_chirp_list.
     """
 
     def __init__(self):

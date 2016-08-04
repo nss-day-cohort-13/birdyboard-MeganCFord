@@ -5,7 +5,9 @@ import uuid
 class Threader:
     """
     handles the retrieval and creation of chirp threads(lists of chirps) in birdyboard.py.
-    Methods: deserialize_threads, generate_new_thread, serialize_threads, thread_search
+    all threads are saved into a dictionary with a unique UUID key. Private threads receive a tuple of allowed user unique UUIDs.
+
+    Methods: deserialize_threads, generate_new_thread, serialize_threads, generate_public_threads_list, generate_private_threads_list.
     """
 
     def __init__(self):
@@ -84,4 +86,3 @@ class Threader:
                     self.temp_threads[index] = key
                     print("{0}. {1}".format(index, value["title"]))
                     index += 1
-        
