@@ -4,7 +4,7 @@ import uuid
 
 class Chirper:
     """
-    handles the retrieval and creation of individual 'chirp' messages in birdyboard.py.
+    Handles the retrieval and creation of individual 'chirp' messages in birdyboard.py.
     all chirps are saved into a dictionary with a unique UUID key, and a unique thread ID from thread.py.
     Methods: deserialize_chirps, generate_new_chirp, serialize_chirps, generate_chirp_list.
     """
@@ -14,7 +14,7 @@ class Chirper:
 
     def deserialize_chirps(self):
         """
-        opens chirps.txt file. handles what happens if there are no chirps.
+        Opens chirps.txt file. handles what happens if there are no chirps.
         """
         try:
             with open('chirps.txt', 'rb') as chirps:
@@ -28,7 +28,7 @@ class Chirper:
 
     def generate_new_chirp(self, user_name, thread_id, text):
         """
-        adds a new chirp to the chirp library. Returns a unique key value for the new chirp so it can be added to its associated conversation. Runs deserialization and serialization functions.
+        Adds a new chirp to the chirp library. Returns a unique key value for the new chirp so it can be added to its associated conversation. Runs deserialization and serialization functions.
         Arguments: user id (top-level variable created in birdyboard when user logs in), conversation id, and string text for message.
         """
         chirp_key = str(uuid.uuid4())
@@ -41,7 +41,7 @@ class Chirper:
 
     def serialize_chirps(self):
         """
-        saves new chirps to the chirps.txt file.
+        Saves new chirps to the chirps.txt file.
         Arguments: none
         """
         with open("chirps.txt", "wb+") as chirps:
@@ -49,7 +49,7 @@ class Chirper:
 
     def generate_chirp_list(self, thread_id):
         """
-        receives a unique thread ID and prints. DOES NOT save the chirp list into a temp dict, since they don't need to be accessed or anything.
+        Receives a unique thread ID and prints. DOES NOT save the chirp list into a temp dict, since they don't need to be accessed or anything.
         Arguments: the unique id of the thread being viewed.
         """
         self.deserialize_chirps()

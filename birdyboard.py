@@ -212,11 +212,11 @@ class Birdyboard:
         if len(self.threader.temp_threads) == 0:
             print("no private chirps yet!")
         else:
-            print("enter the number of the chirp you'd like to view the full thread for.")
-        if logged_in is True:
-            thread = input(">> ")
-        else:
-            thread = input(">> ")
+            if logged_in is True:
+                print("enter the number of the chirp you'd like to view the full thread for.")
+                thread = input(">> ")
+            else:
+                thread = input(">> ")
 
         # handle input.
         if thread == "b":  # go back to either logged in or unlogged in menu.
