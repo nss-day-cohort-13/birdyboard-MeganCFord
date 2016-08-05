@@ -4,8 +4,8 @@ import uuid
 
 class Usurper:
     """
-    handles the retrieval and creation of users in birdyboard.py.
-    all users are saved into a dictionary with a unique UUID key.
+    Handles the retrieval and creation of users in birdyboard.py.
+    All users are saved into a dictionary with a unique UUID key.
     Methods: deserialize_users, generate_new_user, serialize_users, generate_users_list.
     """
 
@@ -15,7 +15,7 @@ class Usurper:
 
     def deserialize_users(self):
         """
-        opens users.txt file. handles what happens if there are no users.
+        Opens users.txt file. handles what happens if there are no users.
         """
         try:
             with open('users.txt', 'rb') as users:
@@ -29,7 +29,7 @@ class Usurper:
 
     def serialize_users(self):
         """
-        saves new users to the users.txt file.
+        Saves new users to the users.txt file.
         Arguments: none
         """
         with open("users.txt", "wb+") as users:
@@ -37,7 +37,7 @@ class Usurper:
 
     def generate_new_user(self, user_name, real_name):
         """
-        adds a new user to the user library. Returns a unique key value for the new user so it can be added to its associated conversation. Runs deserialization and serialization functions.
+        Adds a new user to the user library. Returns a unique key value for the new user so it can be added to its associated conversation. Runs deserialization and serialization functions.
         Arguments: 1. username string text, 2. string text for real name.
         """
         user_key = str(uuid.uuid4())
@@ -50,7 +50,7 @@ class Usurper:
 
     def generate_users_list(self):
         """
-        deserializes users.txt, then prints a menu of users. saves the menu indices associated with the library keys into a temporary variable, so the user can select an option based on the index.
+        Deserializes users.txt, then prints a menu of users. Saves the menu indices associated with the library keys into a temporary variable, so the user can select an option based on the index.
         Arguments: None
         """
         self.deserialize_users()
