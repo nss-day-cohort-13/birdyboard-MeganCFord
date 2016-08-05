@@ -6,12 +6,12 @@ from user import *
 
 class Birdyboard:
     """
-    this app's functionality is a private/public message board. It constructs three subclasses which pull from three serialized .txt files: users, threads, and chirps. All items in these three files are identified by a unique UUID.
+    this app's functionality is a private/public message board. It constructs three subclasses which pull serialized data from three .txt files: users, threads, and chirps. All items in these three files are identified by a unique UUID.
 
     An unlogged in user can view available logins and view (but not add to) public threads and their associated chirps.
-    A logged in user can log out, view lists of public and private threads (and add new threads), and view and add to chirps associated with threads. they can only view the private chirps they are part of.
+    A logged in user can log out, view lists of public and private threads (and add new threads), and view and add to chirps associated with threads. They can only view the private chirps they are part of.
 
-    when a new private thread is created, the UUIDs of the two associated users are saved into its information so it is only accessible through its associated user set,
+    When a new private thread is created, the UUIDs of the two associated users are saved into its information so it is only accessible through its associated user set,
     and when a new chirp is created, the UUID of the thread is saved into its information so it is only accessible through its associated thread.
 
     Methods: unlogged_in_menu, logged_in_menu, create_a_user_menu, what_if_user_name_is_taken, users_menu, view_threads_menu, new_public_thread_menu, new_private_thread_menu, what_if_thread_name_is_taken, full_chirp_menu, and add_to_chirp_menu.
