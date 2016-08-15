@@ -6,13 +6,12 @@ from user import *
 
 class Birdyboard:
     """
-    this app's functionality is a private/public message board. It constructs three subclasses which pull serialized data from three .txt files: users, threads, and chirps. All items in these three files are identified by a unique UUID.
+    This app's functionality is a private/public message board. It constructs three subclasses which pull serialized data from three .txt files: users, threads, and chirps. All items in these three files are dictionaries, with unique UUIDs as keys.
 
     An unlogged in user can view available logins and view (but not add to) public threads and their associated chirps.
     A logged in user can log out, view lists of public and private threads (and add new threads), and view and add to chirps associated with threads. They can only view the private chirps they are part of.
 
-    When a new private thread is created, the UUIDs of the two associated users are saved into its information so it is only accessible through its associated user set,
-    and when a new chirp is created, the UUID of the thread is saved into its information so it is only accessible through its associated thread.
+    When a new private thread is created, the UUIDs of the two associated users are saved into its information so it is only accessible through its associated user set, and when a new chirp is created, the UUID of the thread is saved into its information so it is only accessible through its associated thread.
 
     Methods: unlogged_in_menu, logged_in_menu, create_a_user_menu, what_if_user_name_is_taken, users_menu, view_threads_menu, new_public_thread_menu, new_private_thread_menu, what_if_thread_name_is_taken, full_chirp_menu, and add_to_chirp_menu.
 
@@ -44,8 +43,9 @@ class Birdyboard:
 
     def unlogged_in_menu(self):
         """
-        requests input for top level menu functionality while the user is not logged in. Handles whether the user would like to log in, create a user, exit, or view public chirps.
-        Arguments: none
+        Requests input for top level menu functionality while the user is not logged in. Requests a next-step input and handles whether the user would like to log in, create a user, exit, or view public chirps.
+        ========
+        Method arguments: none
         """
         next_step = input(">> ")
         if next_step == "1":  # create a user.
@@ -71,8 +71,9 @@ class Birdyboard:
 
     def logged_in_menu(self):
         """
-        Top level menu to print when user logs in or when logged in user traverses back to top-level. requests a next-step input and handles whether the user would like to log out, exit, view a public chirp, view a private chirp, or create a new public or private thread.
-        Arguments: None
+        Top level menu to print when user logs in or when logged in user traverses back to top-level. Requests a next-step input and handles whether the user would like to log out, exit, view a public chirp, view a private chirp, or create a new public or private thread.
+        ========
+        Method arguments: None
         """
         next_step = input(">> ")
         if next_step == "1":  # log out
@@ -107,8 +108,9 @@ class Birdyboard:
 
     def create_a_user_menu(self):
         """
-        menu that prints as part of creating a new user (accessible from unlogged_in_menu). requests a user input and checks the input against the users list to make sure it doesn't already exist. if it doesn't, continues to generate a new user and log them in, capturing their unique user ID and new user name to display.
-        Arguments: None
+        Menu that prints as part of creating a new user (accessible from unlogged_in_menu). Requests a user input and checks the input against the users list to make sure it doesn't already exist. If it does, calls what_if_user_name_is_taken menu. If it doesn't, continues to generate a new user and log them in, setting their unique user ID as self.user_id, and new user name as self.user_name.
+        ========
+        Method arguments: None
         """
         user_name = input("user name: ")
         if user_name == "b":  # go back.
@@ -135,7 +137,8 @@ class Birdyboard:
     def what_if_user_name_is_taken(self):
         """
         Menu that runs if a user enters a username in create_a_user_menu that is already taken. Requests input from the user and handles whether they would like to go back, see a list of users to choose from, try again to create a new user, or exit.
-        Arguments: None
+        ========
+        Method arguments: None
         """
         print("'b' to go back.\n'x' to exit.\n1. Choose from a list of created users.\n2. Try creating a user with a different name.")
         next_step = input(">> ")
@@ -162,8 +165,9 @@ class Birdyboard:
 
     def users_menu(self):
         """
-        prints after list of users is generated to gather what the user would like to do next- go back, exit, or log in to one of the users.
-        arguments: None
+        Prints after list of users is generated and printed to request input for what the user would like to do next- go back, exit, or log in to one of the existing users.
+        ========
+        Method arguments: None
         """
         next_step = input("'b' to go back.\n'x' to exit.\nChoose a user to log into.\n>> ")
         if next_step == "b":  # go back.
@@ -198,11 +202,12 @@ class Birdyboard:
 
     def view_threads_menu(self):
         """
-        menu that appears after all chirp threads are printed (threader.generate_threads_list). Allows the user to view a full chirp thread based on the index, or to go back or exit.
-        arguments: none
+        Menu that appears after all chirp threads are printed (threader.generate_threads_list). Allows the user to view a full chirp thread based on the index, or to go back or exit.
+        ========
+        Method arguments: none
         """
 
-        # deal with the fact that un-logged in users can see public chirp threadsbut only logged-in users can add a new thread. Also handle what happens if there are no threads to view.
+        # deal with the fact that un-logged in users can see public chirp threads, but only logged-in users can add a new thread. Also handle what happens if there are no threads to view.
         logged_in = False
         if len(self.user_name) > 0:
             logged_in = True
@@ -263,7 +268,8 @@ class Birdyboard:
     def new_public_thread_menu(self):
         """
         Prints when 'new public chirp' is chosen from top level menu, or from view chirps menu when self.public_or_private is set to public. Requests title text input and sends to thread.py appropriately.
-        Arguments: none
+        ========
+        Method arguments: none
         """
 
         print("'b' to go back.\n'x' to exit.\n")
@@ -287,8 +293,9 @@ class Birdyboard:
 
     def new_private_thread_menu(self):
         """
-        Prints when 'new private chirp' is chosen from top level menu, or from view chirps menu when self.public_or_private is set to private. handles who to send the chirp to, title text input, and sends both to thread.py appropriately.
-        Arguments: none
+        Prints when 'new private chirp' is chosen from top level menu, or from view chirps menu when self.public_or_private is set to private. Handles who to send the chirp to, title text input, and sends both to thread.py appropriately.
+        ========
+        Method arguments: none
         """
         next_step = input("'b' to go back.\n'x' to exit.\nTo which user would you like to send your chirp?\n>> ")
         if next_step == "b":  # go back
@@ -333,7 +340,8 @@ class Birdyboard:
     def what_if_thread_name_is_taken(self):
         """
         Menu that runs if a user enters a thread title in new_public_thread_menu or new_private_thread_menu that is already taken (in the case of a private thread, only in the threads that include the current user). Requests input from the user and handles whether they would like to go back, see a list of threads to choose from, try again to create a new thread, or exit.
-        Arguments: None
+        ========
+        Method arguments: None
         """
         print("'b' to go back.\n'x' to exit.\n1. Choose from a list of created threads.\n2. Try creating a thread with a different name.")
         next_step = input(">> ")
@@ -361,8 +369,9 @@ class Birdyboard:
 
     def full_chirp_menu(self):
         """
-        prints after view_full_chirp to ask whether the user would like to go back, exit, or add to the chirp thread.
-        arguments: none
+        Prints after view_full_chirp to ask whether the user would like to go back, exit, or add to the chirp thread.
+        ========
+        Arguments: none
         """
         if len(self.user_name) > 0:
             next_step = input("1. add a new chirp to this thread.\n'b' to go back.\n'x' to exit.\n>> ")
@@ -399,8 +408,9 @@ class Birdyboard:
 
     def add_to_chirp_menu(self):
         """
-        requests input from the user for a new chirp to add to the current thread. error handles. Runs as part of full_chirp_menu, automatically sends user ID and thread ID along with chirp text to chirper class.
-        Arguments: none
+        Requests input from the user for a new chirp to add to the current thread. Error handles. Runs as part of full_chirp_menu, automatically sends user ID and thread ID along with chirp text to chirper class.
+        ========
+        Method arguments: none
         """
         chirp_to_add = input("'b' to go back.\n'x' to exit.\nchirp text: >> ")
         if chirp_to_add == "b":  # go back.
@@ -414,6 +424,7 @@ class Birdyboard:
         print(self.threader.thread_library[self.thread_id]["title"] + ":")
         self.chirper.generate_chirp_list(self.thread_id)
         self.full_chirp_menu()
+
 
 if __name__ == '__main__':
     app = Birdyboard()

@@ -16,7 +16,7 @@ class Threader:
 
     def deserialize_threads(self):
         """
-        Opens threads.txt file. handles what happens if there are no threads.
+        Opens threads.txt file. Handles what happens if there are no threads.
         """
         try:
             with open('threads.txt', 'rb') as threads:
@@ -32,7 +32,8 @@ class Threader:
         """
         Generates a new public or private thread with a title and an empty chirp list. If a tuple of allowed user ids is passed as the second argument to this function, the thread is set to private and an allowed_users key is added. I bet eventually I could combine those two values ("if allowed_users exists, the thread is private") but this is more readable for me for right now.
         Returns the ID of the new thread so birdyboard can do something new with it.
-        Arguments: 1. title of new thread. 2. (optional, used for private threads) Tuple with string ids of allowed users.
+        ========
+        Method arguments: 1. title of new thread. 2. (optional, used for private threads) Tuple with string ids of allowed users.
         """
         thread_key = str(uuid.uuid4())
 
@@ -48,16 +49,17 @@ class Threader:
     def serialize_threads(self):
         """
         Saves new threads to the threads.txt file.
-        Arguments: none
+        ========
+        Method arguments: none
         """
         with open("threads.txt", "wb+") as threads:
             pickle.dump(self.thread_library, threads)
 
     def generate_public_threads_list(self):
         """
-        This function prints a list of public thread titles when the user chooses 'view public chirps' option in the top level menu (either unlogged in or logged in). Deserializes threads, then generates a temporary threads dictionary with the printed indices, so the appropriate ID can be requested by the user entering an index number.
-
-        Arguments: None
+        Prints a list of public thread titles when the user chooses 'view public chirps' option in the top level menu (either unlogged in or logged in). Deserializes threads, then generates a temporary threads dictionary with the printed indices, so the appropriate ID can be requested by the user entering an index number.
+        ========
+        Method arguments: None
         """
         self.deserialize_threads()
 
@@ -71,9 +73,9 @@ class Threader:
 
     def generate_private_threads_list(self, user_id):
         """
-        This function prints a list of private thread titles when the user chooses 'view private chirps' option in the top level logged-in menu. Deserializes threads, then generates a temporary threads dictionary with the printed indices, so the appropriate ID can be requested by the user entering an index number.
-
-        Arguments: unique user ID (automatically passed from birdyboard.py) to make sure the only private chirps printed are those involving the currently-logged in user.
+        Prints a list of private thread titles when the user chooses 'view private chirps' option in the top level logged-in menu. Deserializes threads, then generates a temporary threads dictionary with the printed indices, so the appropriate ID can be requested by the user entering an index number.
+        ========
+        Method arguments: unique user ID (automatically passed from birdyboard.py) to make sure the only private chirps printed are those involving the currently-logged in user.
         """
 
         self.deserialize_threads()
