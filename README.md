@@ -1,97 +1,32 @@
-# Birdyboard
+# Python Birdyboard Milestone Exercise
 ## Command Line Message Board
+**Author**: Megan Ford July 2016 
 
-In this app, users will create and read public and private messages via terminal input.
+In this app, users create and read public and private messages via terminal input.
 
-## Instructions
+The Birdyboard app class constructs three subclasses which pull from three serialized dictionaries: users, threads, and chirps. All items in these three files are identified by a unique UUID.
+
+An unlogged in user can view available logins and view (but not add to) public threads and their associated chirps.
+A logged in user can log out, view lists of public and private threads (and add new threads), and view and add to chirps associated with threads. they can only view the private chirps they are part of.
+
+when a new private thread is created, the UUIDs of the two associated users are saved into its information so it is only accessible through its associated user set,
+and when a new chirp is created, the UUID of the thread is saved into its information so it is only accessible through its associated thread.
+
+Also features full forward-backward traversible menu, input error handling, and a test suite.
+
+# Install
+```
+git clone ____
+cd quiz
+python birdyboard.py
+```
+
+![screenshot](birdyboard_screenshot_one.jpg)
+
+
+## Exercise Instructions
 
 Create a series of prompts for users to create and reply to messages in a twitter/message board hybrid.
-
-### Main Menu
-```bash
-#########################################
-##           Birdyboard~~~~~           ##
-#########################################
-1. New User Account
-2. Select User
-3. View Chirps
-4. Public Chirp
-5. Private Chirp
-6. Exit
->
-```
-
-
-### New User
-```bash
-Enter full name
->
-
-Enter screen name
->
-```
-
-
-### Select User
-```bash
-Which user is chriping?
-1. Tweedleedee
-2. BiffBoffin
-...
->
-```
-
-
-### View Chirps
-Chirps are separated into public and private chirps.  Only the two users involved in a private chirp can see it in their Private Chirps section.
-```bash
-<< Private Chirps >>
-1. BiffBoffin: Hey, you up for ping...
-2. Lara_keet: Any idea what Jeff wa...
-3. BiffBoffin: Hah, you got wrecked...
-<< Public Chirps >>
-4. Tweedleedee: Anybody know a good...
-5. Fuzzy: Do NOT try the mega ultra...
-6. Velton32: You guys have got to s...
-...
-9. Main Menu
->
-```
-
-Selecting an individual chirp takes you to that chirp's comment thread.
-```bash
-Tweedleedee: Anybody know a good Thai restaraunt in the area?
-Fuzzy: Smiling Elephant is really good
-BiffBoffin: The pad krapow is amazing!
-...
-1. Reply
-2. Back
->
-```
-
-
-### New Chirp
-Users can chirp publicly or they can start a private chirp with another user.
-
-#### Public
-```bash
-Enter chirp text
->
-```
-
-#### Private
-```bash
-Chirp at
-1. BiffBoffin
-2. Lara_keet
-...
-9. Cancel
->
-
-Enter chirp text
->
-```
-
 
 # Requirements
 
